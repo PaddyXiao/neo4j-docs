@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
     <link rel="up" title="第 2 章 图数据库概要" href="index.html" />
-    <link rel="next" title="第 3 章" href="../chapter3/index.html" />
+    <link rel="next" title="第 3 章 Neo4j图数据库" href="../chapter3/index.html" />
     <link rel="prev" title="2.1. 什么是图数据库?" href="chapter2_1.html" /> 
   </head>
   <body role="document">
@@ -37,7 +37,7 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../chapter3/index.html" title="第 3 章"
+          <a href="../chapter3/index.html" title="第 3 章 Neo4j图数据库"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="chapter2_1.html" title="2.1. 什么是图数据库?"
@@ -59,8 +59,8 @@
 <div class="section" id="rdbms">
 <h2>2.2.1. 从图数据库转换成 RDBMS<a class="headerlink" href="#rdbms" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>将所有的数据用竖立的堆栈表示，并且保持他们直接的关系，你可以看到下面一张图。一个 RDBMS 被优化用于聚合数据，而Neo4j擅长于高度关联的数据。
-图 2.1. RDBMS</p>
+<div><p>将所有的数据用竖立的堆栈表示，并且保持他们直接的关系，你可以看到下面一张图。一个 RDBMS 被优化用于聚合数据，而Neo4j擅长于高度关联的数据。</p>
+<p>图 2.1. RDBMS</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.1.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.1.png?raw=true" />
 <p>图 2.2. 用图实现RDBMS模型</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.2.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.2.png?raw=true" />
@@ -69,11 +69,11 @@
 <div class="section" id="key-value">
 <h2>2.2.2. 从图数据库转换成Key-Value数据库<a class="headerlink" href="#key-value" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>Key-Value模型适合用于简单的数据或者列表。当数据之间不断交互关联时，你更需要一张图模型。Neo4j让你能惊醒制作简单的数据结构到复杂，互相连接的数据。
-图 2.3. Key-Value 存储模型</p>
+<div><p>Key-Value模型适合用于简单的数据或者列表。当数据之间不断交互关联时，你更需要一张图模型。Neo4j让你能惊醒制作简单的数据结构到复杂，互相连接的数据。</p>
+<p>图 2.3. Key-Value 存储模型</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.3.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.3.png?raw=true" />
-<p>K* 代表一个键，V* 代表一个值。请注意，某些键指向其他键以及普通值。
-图 2.4. 用图实现 Key-Value 模型</p>
+<p>K* 代表一个键，V* 代表一个值。请注意，某些键指向其他键以及普通值。</p>
+<p>图 2.4. 用图实现 Key-Value 模型</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.4.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.4.png?raw=true" />
 </div></blockquote>
 </div>
@@ -85,8 +85,8 @@
 <div class="section" id="id3">
 <h2>2.2.4. 从图数据库转换成文档型数据库<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>文档型数据库用文档进行层次划分，而自由的数据规划也很容易被表示成一颗树。成长为一张图的话，文档之间的关联你需要更有代表性的数据结构来存储，而在Neo4j中，这些关系是非常容易处理的。
-图 2.5. 文档型数据库</p>
+<div><p>文档型数据库用文档进行层次划分，而自由的数据规划也很容易被表示成一颗树。成长为一张图的话，文档之间的关联你需要更有代表性的数据结构来存储，而在Neo4j中，这些关系是非常容易处理的。</p>
+<p>图 2.5. 文档型数据库</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.5.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.5.png?raw=true" />
 <p>D=文档, S=子文档, V=值, D2/S2 = 关联到（其他）文档的索引。</p>
 <p>图 2.6. 从图数据库转换成文档型数据库</p>
@@ -117,7 +117,7 @@
                         title="previous chapter">2.1. 什么是图数据库?</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../chapter3/index.html"
-                        title="next chapter">第 3 章</a></p>
+                        title="next chapter">第 3 章 Neo4j图数据库</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -146,7 +146,7 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../chapter3/index.html" title="第 3 章"
+          <a href="../chapter3/index.html" title="第 3 章 Neo4j图数据库"
              >next</a> |</li>
         <li class="right" >
           <a href="chapter2_1.html" title="2.1. 什么是图数据库?"

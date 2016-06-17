@@ -7,6 +7,7 @@
 -------------------------------------------------------------------
 
     将所有的数据用竖立的堆栈表示，并且保持他们直接的关系，你可以看到下面一张图。一个 RDBMS 被优化用于聚合数据，而Neo4j擅长于高度关联的数据。
+    
     图 2.1. RDBMS
     
     .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.1.png?raw=true
@@ -20,11 +21,13 @@
 ------------------------------------------------------------------------
 
     Key-Value模型适合用于简单的数据或者列表。当数据之间不断交互关联时，你更需要一张图模型。Neo4j让你能惊醒制作简单的数据结构到复杂，互相连接的数据。
+    
     图 2.3. Key-Value 存储模型
     
     .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.3.png?raw=true
     
     K* 代表一个键，V* 代表一个值。请注意，某些键指向其他键以及普通值。
+    
     图 2.4. 用图实现 Key-Value 模型
     
     .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.4.png?raw=true
@@ -38,6 +41,7 @@
 ------------------------------------------------------------------------
 
     文档型数据库用文档进行层次划分，而自由的数据规划也很容易被表示成一颗树。成长为一张图的话，文档之间的关联你需要更有代表性的数据结构来存储，而在Neo4j中，这些关系是非常容易处理的。
+    
     图 2.5. 文档型数据库
     
     .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image2.5.png?raw=true

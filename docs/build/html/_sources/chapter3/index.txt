@@ -1,4 +1,132 @@
-第 3 章
-================
+第 3 章 Neo4j图数据库
+==========================================
+
+    这个章节将讲述Neo4j模型和行为的更多细节。
+
+3.1. 节点
+--------------------
+
+    构成一张图的基本元素是节点和关系。在Neo4j中，节点和关系都可以包含属性。
+    节点经常被用于表示一些_实体_，但依赖关系也一样可以表示实体。
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.1.png?raw=true
+    
+    下面让我们认识一个最简单的节点，他只有一个属性，属性名是name,属性值是Marko：
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.2.png?raw=true
+ 
+3.2. 关系
+--------------------
+
+    节点之间的关系是图数据库很重要的一部分。通过关系可以找到很多关联的数据，比如节点集合，关系集合以及他们的属性集合。
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.3.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.4.png?raw=true
+ 
+    一个关系连接两个节点，必须有一个开始节点和结束节点。
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.5.png?raw=true
+ 
+    因为关系总是直接相连的，所以对于一个节点来说，与他关联的关系看起来有输入/输出两个方向，这个特性对于我们遍历图非常有帮助：
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.6.png?raw=true
+ 
+    关系在任一方向都会被遍历访问。这意味着我们并不需要在不同方向都新增关系。
+
+    而关系总是会有一个方向，所以当这个方向对你的应用没有意义时你可以忽略方向。
+
+    特别注意一个节点可以有一个关系是指向自己的：
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.7.png?raw=true
+ 
+    为了将来增强遍历图中所有的关系，我们需要为关系设置类型。注意 关键字 type 在这可能会被误解，你其实可以把他简单的理解为一个标签而已。
+
+    下面的例子是一个有两种关系的最简单的社会化网络图。
+
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true
+
+    表 3.1. 使用到的关系和关系类型
+    
+    ================================    =========================================
+    功能                                 实现
+    ================================    =========================================
+    get who a person follows	        outgoing follows relationships, depth one
+    get the followers of a person	    incoming follows relationships, depth one
+    get who a person blocks	outgoing    blocks relationships, depth one
+    get who a person is blocked by	    incoming blocks relationships, depth one
+    ================================    =========================================
+
+    下面的放里是一个简单的文件系统，包括一些符号软链接：
+ 
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true
+ 
+    根据你看到的，你在遍历的时候会用到关系的方向和关系的类型。
+    
+    ======================================================    ========================================================
+    What 	                                                  How
+    ======================================================    ========================================================
+    get the full path of a file	                              incoming file relationships
+    get all paths for a file	                              incoming file and symbolic link relationships
+    get all files in a directory	                          outgoing file and symbolic link relationships, depth one
+    get all files in a directory, excluding symbolic links	  outgoing file relationships, depth one
+    get all files in a directory, recursively	              outgoing file and symbolic link relationships
+    ======================================================    ========================================================
+    
+3.3. 属性
+---------------------
+
+    节点和关系都可以设置自己的属性。
+    属性是由Key-Value键值对组成，键名是字符串。属性值是要么是原始值，要么是原始值类型的一个数组。比如+String+，+int+和i+int[]+都是合法的。
+ 
+    注意
+    	null不是一个合法的属性值。 Nulls能代替模仿一个不存在的Key。
+        
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true
+ 
+    表 3.2. 属性值类型
+    
+    =======    ========================================================    ======================================================
+    Type 	   Description 	                                               Value range
+    =======    ========================================================    ======================================================
+    boolean	   true/false
+    byte	   8-bit integer	                                           -128 to 127, inclusive
+    short	   16-bit integer	                                           -32768 to 32767, inclusive
+    int	       32-bit integer	                                           -2147483648 to 2147483647, inclusive
+    long	   64-bit integer	                                           -9223372036854775808 to 9223372036854775807, inclusive
+    float	   32-bit IEEE 754 floating-point number	
+    double	   64-bit IEEE 754 floating-point number	
+    char	   16-bit unsigned integers representing Unicode characters	   u0000 to uffff (0 to 65535)
+    String	   sequence of Unicode characters	
+    =======    ========================================================    ======================================================
+    
+    如果要了解float/double类型的更多细节，请参考：Java Language Specification。
+    
+3.4. 路径
+--------------------
+    路径由至少一个节点，通过各种关系连接组成，经常是作为一个查询或者遍历的结果。
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true
+ 
+    最短的路径是0长度的像下面这样：
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true
+ 
+    长度为1的路径如下:
+    
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.13.png?raw=true
+ 
+3.5. 遍历（Traversal）
+------------------------------------
+
+    遍历一张图就是按照一定的规则，跟随他们的关系，访问关联的的节点集合。最多的情况是只有一部分子图被访问到，因为你知道你对那一部分节点或者关系感兴趣。
+
+    Neo4j提供了遍历的API，可以让你指定遍历规则。最简单的设置就是设置遍历是宽度优先还是深度优先。
+
+    想对遍历框架有一个深入的了解，请参考章节：tutorial-traversal。
+
+    想了解更多的Java代码范例，请参考章节：tutorials-java-embedded-traversal。
+
+    其他查询图的方式还有cypher-query-lang, Cypher和gremlin-plugin, Gremlin。
+
 
 

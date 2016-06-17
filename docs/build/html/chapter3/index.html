@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>第 3 章 &mdash; neo4j 0.1.0a documentation</title>
+    <title>第 3 章 Neo4j图数据库 &mdash; neo4j 0.1.0a documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
     <link rel="next" title="第 4 章" href="../chapter4/index.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../chapter2/chapter2_2.html" /> 
+    <link rel="prev" title="2.2. 比较各种数据库模型" href="../chapter2/chapter2_2.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,7 +39,7 @@
           <a href="../chapter4/index.html" title="第 4 章"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../chapter2/chapter2_2.html" title="&lt;no title&gt;"
+          <a href="../chapter2/chapter2_2.html" title="2.2. 比较各种数据库模型"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li> 
       </ul>
@@ -50,8 +50,106 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>第 3 章<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="neo4j">
+<h1>第 3 章 Neo4j图数据库<a class="headerlink" href="#neo4j" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>这个章节将讲述Neo4j模型和行为的更多细节。</div></blockquote>
+<div class="section" id="id1">
+<h2>3.1. 节点<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>构成一张图的基本元素是节点和关系。在Neo4j中，节点和关系都可以包含属性。
+<a href="#id5"><span class="problematic" id="id6">节点经常被用于表示一些_实体_</span></a>，但依赖关系也一样可以表示实体。</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.1.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.1.png?raw=true" />
+<p>下面让我们认识一个最简单的节点，他只有一个属性，属性名是name,属性值是Marko：</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.2.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.2.png?raw=true" />
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h2>3.2. 关系<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>节点之间的关系是图数据库很重要的一部分。通过关系可以找到很多关联的数据，比如节点集合，关系集合以及他们的属性集合。</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.3.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.3.png?raw=true" />
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.4.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.4.png?raw=true" />
+<p>一个关系连接两个节点，必须有一个开始节点和结束节点。</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.5.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.5.png?raw=true" />
+<p>因为关系总是直接相连的，所以对于一个节点来说，与他关联的关系看起来有输入/输出两个方向，这个特性对于我们遍历图非常有帮助：</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.6.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.6.png?raw=true" />
+<p>关系在任一方向都会被遍历访问。这意味着我们并不需要在不同方向都新增关系。</p>
+<p>而关系总是会有一个方向，所以当这个方向对你的应用没有意义时你可以忽略方向。</p>
+<p>特别注意一个节点可以有一个关系是指向自己的：</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.7.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.7.png?raw=true" />
+<p>为了将来增强遍历图中所有的关系，我们需要为关系设置类型。注意 关键字 type 在这可能会被误解，你其实可以把他简单的理解为一个标签而已。</p>
+<p>下面的例子是一个有两种关系的最简单的社会化网络图。</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true" />
+<p>表 3.1. 使用到的关系和关系类型</p>
+<p>下面的放里是一个简单的文件系统，包括一些符号软链接：</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true" />
+<p>根据你看到的，你在遍历的时候会用到关系的方向和关系的类型。</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">What</th>
+<th class="head">How</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>get the full path of a file</td>
+<td>incoming file relationships</td>
+</tr>
+<tr class="row-odd"><td>get all paths for a file</td>
+<td>incoming file and symbolic link relationships</td>
+</tr>
+<tr class="row-even"><td>get all files in a directory</td>
+<td>outgoing file and symbolic link relationships, depth one</td>
+</tr>
+<tr class="row-odd"><td>get all files in a directory, excluding symbolic links</td>
+<td>outgoing file relationships, depth one</td>
+</tr>
+<tr class="row-even"><td>get all files in a directory, recursively</td>
+<td>outgoing file and symbolic link relationships</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>3.3. 属性<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>节点和关系都可以设置自己的属性。
+属性是由Key-Value键值对组成，键名是字符串。属性值是要么是原始值，要么是原始值类型的一个数组。比如+String+，+int+和i+int[]+都是合法的。</p>
+<dl class="docutils">
+<dt>注意</dt>
+<dd>null不是一个合法的属性值。 Nulls能代替模仿一个不存在的Key。</dd>
+</dl>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true" />
+<p>表 3.2. 属性值类型</p>
+<p>如果要了解float/double类型的更多细节，请参考：Java Language Specification。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h2>3.4. 路径<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>路径由至少一个节点，通过各种关系连接组成，经常是作为一个查询或者遍历的结果。</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true" />
+<p>最短的路径是0长度的像下面这样：</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true" />
+<p>长度为1的路径如下:</p>
+<img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.13.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.13.png?raw=true" />
+</div></blockquote>
+</div>
+<div class="section" id="traversal">
+<h2>3.5. 遍历（Traversal）<a class="headerlink" href="#traversal" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>遍历一张图就是按照一定的规则，跟随他们的关系，访问关联的的节点集合。最多的情况是只有一部分子图被访问到，因为你知道你对那一部分节点或者关系感兴趣。</p>
+<p>Neo4j提供了遍历的API，可以让你指定遍历规则。最简单的设置就是设置遍历是宽度优先还是深度优先。</p>
+<p>想对遍历框架有一个深入的了解，请参考章节：tutorial-traversal。</p>
+<p>想了解更多的Java代码范例，请参考章节：tutorials-java-embedded-traversal。</p>
+<p>其他查询图的方式还有cypher-query-lang, Cypher和gremlin-plugin, Gremlin。</p>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -60,9 +158,21 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">第 3 章 Neo4j图数据库</a><ul>
+<li><a class="reference internal" href="#id1">3.1. 节点</a></li>
+<li><a class="reference internal" href="#id2">3.2. 关系</a></li>
+<li><a class="reference internal" href="#id3">3.3. 属性</a></li>
+<li><a class="reference internal" href="#id4">3.4. 路径</a></li>
+<li><a class="reference internal" href="#traversal">3.5. 遍历（Traversal）</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="../chapter2/chapter2_2.html"
-                        title="previous chapter">&lt;no title&gt;</a></p>
+                        title="previous chapter">2.2. 比较各种数据库模型</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../chapter4/index.html"
                         title="next chapter">第 4 章</a></p>
@@ -97,7 +207,7 @@
           <a href="../chapter4/index.html" title="第 4 章"
              >next</a> |</li>
         <li class="right" >
-          <a href="../chapter2/chapter2_2.html" title="&lt;no title&gt;"
+          <a href="../chapter2/chapter2_2.html" title="2.2. 比较各种数据库模型"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li> 
       </ul>
