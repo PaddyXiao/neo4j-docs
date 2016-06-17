@@ -81,6 +81,31 @@
 <p>为了将来增强遍历图中所有的关系，我们需要为关系设置类型。注意 关键字 type 在这可能会被误解，你其实可以把他简单的理解为一个标签而已。</p>
 <p>下面的例子是一个有两种关系的最简单的社会化网络图。</p>
 <p>表 3.1. 使用到的关系和关系类型</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">功能</th>
+<th class="head">实现</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>get who a person follows</td>
+<td>outgoing follows relationships, depth one</td>
+</tr>
+<tr class="row-odd"><td>get the followers of a person</td>
+<td>incoming follows relationships, depth one</td>
+</tr>
+<tr class="row-even"><td>get who a person blocks     outgoing</td>
+<td>blocks relationships, depth one</td>
+</tr>
+<tr class="row-odd"><td>get who a person is blocked by</td>
+<td>incoming blocks relationships, depth one</td>
+</tr>
+</tbody>
+</table>
 <p>下面的放里是一个简单的文件系统，包括一些符号软链接：</p>
 <img alt="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true" src="https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true" />
 <p>根据你看到的，你在遍历的时候会用到关系的方向和关系的类型。</p>

@@ -45,14 +45,14 @@
 
     表 3.1. 使用到的关系和关系类型
     
-    ================================    =========================================
-    功能                                 实现
-    ================================    =========================================
-    get who a person follows            outgoing follows relationships, depth one
-    get the followers of a person       incoming follows relationships, depth one
-    get who a person blocks	outgoing    blocks relationships, depth one
-    get who a person is blocked by      incoming blocks relationships, depth one
-    ================================    =========================================
+    =======================================    =========================================
+    功能                                        实现
+    =======================================    =========================================
+    get who a person follows                   outgoing follows relationships, depth one
+    get the followers of a person              incoming follows relationships, depth one
+    get who a person blocks	outgoing           blocks relationships, depth one
+    get who a person is blocked by             incoming blocks relationships, depth one
+    =======================================    =========================================
 
     下面的放里是一个简单的文件系统，包括一些符号软链接：
  
