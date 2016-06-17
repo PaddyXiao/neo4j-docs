@@ -43,8 +43,6 @@
 
     下面的例子是一个有两种关系的最简单的社会化网络图。
 
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true
-
     表 3.1. 使用到的关系和关系类型
     
     ================================    =========================================
@@ -58,7 +56,7 @@
 
     下面的放里是一个简单的文件系统，包括一些符号软链接：
  
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true
  
     根据你看到的，你在遍历的时候会用到关系的方向和关系的类型。
     
@@ -81,7 +79,7 @@
     注意
     	null不是一个合法的属性值。 Nulls能代替模仿一个不存在的Key。
         
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true
  
     表 3.2. 属性值类型
     
@@ -105,15 +103,15 @@
 --------------------
     路径由至少一个节点，通过各种关系连接组成，经常是作为一个查询或者遍历的结果。
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true
  
     最短的路径是0长度的像下面这样：
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true
  
     长度为1的路径如下:
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.13.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true
  
 3.5. 遍历（Traversal）
 ------------------------------------
