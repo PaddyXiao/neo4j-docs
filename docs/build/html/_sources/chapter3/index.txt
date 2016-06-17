@@ -7,7 +7,7 @@
 --------------------
 
     构成一张图的基本元素是节点和关系。在Neo4j中，节点和关系都可以包含属性。
-    节点经常被用于表示一些_实体_，但依赖关系也一样可以表示实体。
+    节点经常被用于表示一些实体，但依赖关系也一样可以表示实体。
     
     .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.1.png?raw=true
     
@@ -48,10 +48,10 @@
     ================================    =========================================
     功能                                 实现
     ================================    =========================================
-    get who a person follows	        outgoing follows relationships, depth one
-    get the followers of a person	    incoming follows relationships, depth one
+    get who a person follows            outgoing follows relationships, depth one
+    get the followers of a person       incoming follows relationships, depth one
     get who a person blocks	outgoing    blocks relationships, depth one
-    get who a person is blocked by	    incoming blocks relationships, depth one
+    get who a person is blocked by      incoming blocks relationships, depth one
     ================================    =========================================
 
     下面的放里是一个简单的文件系统，包括一些符号软链接：
