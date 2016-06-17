@@ -83,19 +83,19 @@
  
     表 3.2. 属性值类型
     
-    =======    ========================================================    ======================================================
-    Type 	   Description 	                                               Value range
-    =======    ========================================================    ======================================================
+    =======    ===============================================================    ======================================================================
+    Type 	   Description 	                                                      Value range
+    =======    ===============================================================    ======================================================================
     boolean	   true/false
-    byte	   8-bit integer	                                           -128 to 127, inclusive
-    short	   16-bit integer	                                           -32768 to 32767, inclusive
-    int	       32-bit integer	                                           -2147483648 to 2147483647, inclusive
-    long	   64-bit integer	                                           -9223372036854775808 to 9223372036854775807, inclusive
+    byte	   8-bit integer	                                                  -128 to 127, inclusive
+    short	   16-bit integer	                                                  -32768 to 32767, inclusive
+    int	       32-bit integer	                                                  -2147483648 to 2147483647, inclusive
+    long	   64-bit integer	                                                  -9223372036854775808 to 9223372036854775807, inclusive
     float	   32-bit IEEE 754 floating-point number	
     double	   64-bit IEEE 754 floating-point number	
-    char	   16-bit unsigned integers representing Unicode characters	   u0000 to uffff (0 to 65535)
+    char	   16-bit unsigned integers representing Unicode characters	          u0000 to uffff (0 to 65535)
     String	   sequence of Unicode characters	
-    =======    ========================================================    ======================================================
+    =======    ===============================================================    ======================================================================
     
     如果要了解float/double类型的更多细节，请参考：Java Language Specification。
     
