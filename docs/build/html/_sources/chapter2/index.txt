@@ -7,12 +7,15 @@
     :maxdepth: 3
     
     chapter2_1
+    
         chapter2_1_1
         chapter2_1_2
         chapter2_1_3
         chapter2_1_4
         chapter2_1_5
+        
     chapter2_2
+    
         chapter2_2_1
         chapter2_2_2
         chapter2_2_3
