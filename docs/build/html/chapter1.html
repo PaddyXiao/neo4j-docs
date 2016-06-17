@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="Java">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>第 1 章 Neo4j的亮点 &mdash; IRD 0.1.0a documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="IRD 0.1.0a documentation" href="index.html" />
+    <link rel="next" title="第 2 章" href="chapter2/index.html" />
+    <link rel="prev" title="欢迎访问neo4j文档!" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter2/index.html" title="第 2 章"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="欢迎访问neo4j文档!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IRD 0.1.0a documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="neo4j">
+<h1>第 1 章 Neo4j的亮点<a class="headerlink" href="#neo4j" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>作为一款强健的，可伸缩的高性能数据库，Neo4j最适合完整的企业部署或者用于一个轻量级项目中完整服务器的一个子集存在。
+它包括如下几个显著特点:
+- 完整的ACID支持
+- 高可用性
+- 轻易扩展到上亿级别的节点和关系
+- 通过遍历工具高速检索数据
+适当的ACID操作是保证数据一致性的基础。Neo4j确保了在一个事务里面的多个操作同时发生，保证数据一致性。不管是采用嵌入模式还是多服务器集群部署，都支持这一特性。更多详细的介绍，请参考章节:transactions。
+可靠的图型存储可以非常轻松的集成到任何一个应用中。随着我们开发的应用在运营中不断发展，性能问题肯定会逐步凸显出来，而Neo4j不管应用如何变化，他只会受到计算机硬件性能的影响，不受业务本身的约束。部署一个neo4j服务器便可以承载上亿级的节点和关系。当然，当单节点无法承载我们的数据需求时，我们可以进行分布式集群部署，详细的细节，请参考章节：ha。将图数据库用于存储关系复杂的数据是他最大的优势。通过Neo4j提供的遍历工具，可以非常高效的进行数据检索，每秒可以达到上亿级的检索量。一个检索操作类似于RDBMS里面的连接（_join_）操作。</div></blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">欢迎访问neo4j文档!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter2/index.html"
+                        title="next chapter">第 2 章</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/chapter1.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter2/index.html" title="第 2 章"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="欢迎访问neo4j文档!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IRD 0.1.0a documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, BGI-Internet 大数据中心，精准医学联盟.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.2.
+    </div>
+  </body>
+</html>
