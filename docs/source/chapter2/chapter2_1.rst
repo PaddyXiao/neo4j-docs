@@ -10,7 +10,7 @@
     “一张图 – 数据记录在 → 节点 → 包括的 → 属性里面”
     最简单的图是单节点的，一个记录，记录了一些属性。一个节点可以从单属性开始，成长为成千上亿，虽然会有一点点麻烦。从某种意义上讲，将数据用关系连接起来分布到不同节点上才是有意义的。
 
-    .. image: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-gve.svg.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-gve.svg.png?raw=true
     
 2.1.2. 关系将图各个部分组织起来
 ------------------------------
@@ -24,7 +24,7 @@
     “一个 Traversal — 导航 → 一张图; 他 — 标示 → 路径 — 包含 → 节点”
     一次 Traversal, 你可以理解为是你通过一种算法，从一些开始节点开始查询与其关联的节点，比如你想找到 “我朋友喜欢但我不喜欢的那首音乐是什么呢？”，又或者 “如果断电了，拿下服务器的服务会首影响？”等等问题。
 
-    .. image: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-traversal.svg.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-traversal.svg.png?raw=true
     
 2.1.4. 为节点和关系建立索引
 ---------------------------
@@ -32,7 +32,7 @@
     “一个索引 — 映射到 → 属性 — 属于 → 节点或者关系”
     经常，你想通过某一给定的属性值找到节点或者关系。比起通过遍历我们的图来书，用索引将会更加高效。比如“找到用户名是tony的用户”。
     
-    .. image: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-indexes.svg.png?raw=true
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-indexes.svg.png?raw=true
     
 2.1.5. Neo4j是一个图数据库
 ----------------------------
@@ -40,5 +40,5 @@
     “一个图数据库 — 管理 → 一张图 和与图相关的 → 索引”
     Neo4j是一个有商业支持的开源图数据库。他被设计来用于拿下数据不断高速成长的数据存储，用高效的图数据结构代替传统的表设计。用Neo4j工作，您的应用将得到图的所有优越表现，以及您期望的高可靠性。
 
-    .. image: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-overview.svg.png?raw=true   
+    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/graphdb-overview.svg.png?raw=true   
 
