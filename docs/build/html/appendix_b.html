@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="Java">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>附录 B. 常见问题 &mdash; IRD 0.1.0a documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="IRD 0.1.0a documentation" href="index.html" />
+    <link rel="prev" title="附录 A" href="appendix_a/index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="appendix_a/index.html" title="附录 A"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IRD 0.1.0a documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="b">
+<h1>附录 B. 常见问题<a class="headerlink" href="#b" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="neo4j">
+<h2>neo4j数据库支持最大多少个节点？最大支持多少条边？<a class="headerlink" href="#neo4j" title="Permalink to this headline">¶</a></h2>
+<p>目前累积统计它有34.4亿个节点，344亿的关系，和6870亿条属性。</p>
+</div>
+<div class="section" id="id1">
+<h2>neo4j数据库支持的最复杂的连接是什么？（比如每个节点都与其他任何一个节点相连）<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>可以从上面的数字得出理论的极限：它基本上就产生了262144节点和34359607296的关系图。我们从来没有见过这种使用情况。</p>
+</div>
+<div class="section" id="id2">
+<h2>在数据库中，读/写性能跟节点/边的数量有关吗？<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>这个问题意味着两个不同的问题。单次读/写操作不依赖数据库的大小。不管数据库是有10个节点还是有1千万个都一样。 — 然而，有一个事实是如果数据库太大，你的内存可能无法完全缓存住它，因此，你需要频繁的读写磁盘。虽然很多用户没有这样大尺寸的数据库，但有的人却有。如果不巧你的数据库达到了这个尺寸，你可以扩展到多台机器上以减轻缓存压力。</p>
+</div>
+<div class="section" id="id3">
+<h2>neo4j数据库支持的读/写并发请求最大数量是多少呢？<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>在并发请求上面没有任何限制。服务器的并发量更多的是依赖于操作本身的性能（高压写操作，简单读，复杂的遍历等等），以及使用的硬件性能。据粗略估计，在遍历最简单路径时每毫秒可以达到1000次请求。在讨论了指定的用户案例后，我们能得到更好的性能优化方案。</p>
+</div>
+<div class="section" id="id4">
+<h2>在数据库集群环境中数据一致性如何保证的呢？<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>主从复制。从服务器从主服务器拉取数据变化。拉取间隔可以在每个从服务器上进行配置，从毫秒到分钟，根据你自己的需要来定。HA也可以通过从服务器来进行写操作。当发生时，从服务器通过追上主服务器来被写入，然后写入在主从之间完成。其他从服务器做一般处理。</p>
+</div>
+<div class="section" id="id5">
+<h2>当在一个数据库中发生更新操作时如何快速更新其他所有服务器呢？<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<p>拉取间隔在每个从服务器上面进行配置，从几秒到几分钟不等，根据需求而定。当通过一个从服务器写操作时，从服务器立即在写之前与主服务器进行同步。一般情况下，读写加载不并影响从服务器的同步工作。一个复杂的写操作会给从服务器的文件系统巨大压力，与此同时，从服务器也要求拉取同步数据。实际上，我们不系统这成为一个关注的问题。</p>
+</div>
+<div class="section" id="id6">
+<h2>在集群环境中，在不同服务器会出现按比例延迟新增吗？<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>在集群中从服务器超过10台的规模时，我们能预料到来自从服务器的大量的拉取请求会降低从服务器的性能。在集群中的写操作才会受影响，而读操作依然保持线性缩放。</p>
+</div>
+<div class="section" id="id7">
+<h2>支持在线扩展吗？换句话说，如果我们想新加入一台服务器到集群中需要关闭所有服务器吗？<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<p>新的从服务器在不用停止或者启动整个集群的情况下可以被加入到一个已经存在的集群中。我们的HA协议会新增入加入的服务器。从服务器也可以简单的通过关闭他们自己来从集群中移除。</p>
+</div>
+<div class="section" id="id8">
+<h2>新加入一台服务器到全部同步需要多长时间？<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<p>我们推荐在将从服务器加入之前先做一个最近的数据库的快照。一般通过备份来完成。从服务器之需要同步最近的更新，一般情况下只会一点点时间的数据。</p>
+</div>
+<div class="section" id="id9">
+<h2>重启需要多久呢？<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<p>如果重启，你的意思是关闭集群然后再重启它，这完全依赖与你打字的速度。一般是10秒的样子。Neo4j的缓存不会自动预加载，而操作系统的文件系统缓存不会重置。</p>
+</div>
+<div class="section" id="id10">
+<h2>是否有备份恢复机制？<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<p>Neo4j 企业版提供了一个在线备份（完整备份和增量备份）功能。</p>
+</div>
+<div class="section" id="id11">
+<h2>是否支持跨区集群？跨区集群是否比同区集群性能更低呢？<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
+<p>我们有用户在AWS上面测试了多区域部署的情况。跨地区部署在集群管理的效率和协议同步上有一定影响。集群管理大量的延迟会触发主服务器的频繁重选，拖慢整个集群的速度。在跨区部署支持上面以后还需大量提升。</p>
+</div>
+<div class="section" id="id12">
+<h2>是否有任何指定测控策略用于环境建立之类的需求？<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
+<p>关于这个话题我们有更深入的探讨。</p>
+</div>
+<div class="section" id="id13">
+<h2>写数据库是线程安全的吗？<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
+<p>不管在单服务模式还是HA模式，数据库在更新之前都通过锁定节点和关系来保证线程安全。</p>
+</div>
+<div class="section" id="ha">
+<h2>从HA读数据最好的策略是什么？<a class="headerlink" href="#ha" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>保持会话。</li>
+<li>在response中发送返回数据，而在独立的请求中移除需要读回的数据。</li>
+<li>当操作需要时，强制请求从主服务器做一个拉取数据更新操作。</li>
+</ol>
+</div>
+<div class="section" id="id14">
+<h2>对于获取（如果不存在则创建）这中需求最好的策略是什么？<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>单线程模式。</li>
+<li>如果不存在，悲观锁在一个普通节点上。</li>
+<li>如果不存在，乐观创建他，然后再检查。</li>
+</ol>
+</div>
+<div class="section" id="id15">
+<h2>如何锁定服务？<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
+<p>悲观锁。在读数据时并不要求锁。写操作并不会阻塞读操作。不用任何明确的锁定操作就可以完成读取数据操作是非常重要的。当一个节点或者属性修改或者新增时，写锁定会自动完成，或者也可以通过明确的锁设置。它常被用来提供读取语义和保证必须的数据一致性。</p>
+</div>
+<div class="section" id="id16">
+<h2>数据存储占用空间如何？<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
+<p>Neo4j当前并不适合存储 BLOBs/CLOBs。节点，关系和属性并不是保存在磁盘的同一个地方。这个特性将来会进一步介绍。数据库索引怎么样？ Neo4j支持复杂的属性索引。额外的索引功能超过了图本身的索引。Lucene引擎管理独立分页的索引并要求一些空间来存储一个自动索引以及管理私有索引（通过API搜索）。</p>
+</div>
+<div class="section" id="id17">
+<h2>我如何进行数据库查询？<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
+<p>核心 API, Traversal API, REST API, Cypher, Gremlin Neo4j使用日志（在数据丢失时可以修复丢失的数据）功能吗？ 在HA集群环境中基于主从服务器之间的写增量来完成。</p>
+</div>
+<div class="section" id="id18">
+<h2>我如何提示Neo4j的性能？<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
+<p>采用内存映射存储Neo4j文件，Neo4j缓存策略解释如下：
+•       软索引缓存: 软索引在GC认为需要时会被随时清理。如果应用加载并不高时使用。
+•       弱索引缓存: 不管GC是否找到，都会清理弱索引。如果在读取大量数据或者遍历操作时使用。
+•       强索引缓存: 所有的节点和关系都会保存在内存中，JVM会阻止高加载的操作。比如半分钟的暂停间隔。 更大的堆大小是好的，然而12G或者更大的内存对于GC是不切实际的。如果用从磁盘获取数据做比较，用内存映射文件缓存会提供100倍性能，而用Java堆则会是1000倍。
+在主从服务器直接的ACID事务。
+在初始从服务器到主服务器的事务同步中，最终从主服务器到其他从服务器。用死锁探测来完成多个从服务器事务并发支持。从一个数据完整性的角度看是完全一致的，但是必须得重多个点考虑。</p>
+</div>
+<div class="section" id="id19">
+<h2>独立服务器怎么样？<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
+<p>REST API是完全无状态的，但他也可以通过批量提交来实现大量事务支持。线程池和每个socket的线程：对于独立服务器和HA模式来说，Neo4j采用Jetty来连接线程池。（比如在HA集群中25/每节点）。</p>
+</div>
+<div class="section" id="id20">
+<h2>在HA环境中如何使用负载均衡？<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h2>
+<p>通常一个小型服务器扩展被写入后会返回200或404，取决于机器是否是主或从。 扩展被负载均衡服务器用来探测主从服务器设置。只写到从服务器来确保至少在两个地方存在提交事务。</p>
+</div>
+<div class="section" id="id21">
+<h2>Neo4j支持那些监控器？<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h2>
+<p>Neo4j目前没有内建的追踪和解释计划。JMX是用于统计和监控的主要接口。线程内容可以用于调试。</p>
+</div>
+<div class="section" id="id22">
+<h2>我如何导入数据到Neo4j中？<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h2>
+<p>Neo4j批量插入用于初始化一个数据库。在批量插入后，存储的内容可以用与嵌入模式或者HA环境。直接跟传统SQL服务器直接的数据交换目前没有官方支持。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">附录 B. 常见问题</a><ul>
+<li><a class="reference internal" href="#neo4j">neo4j数据库支持最大多少个节点？最大支持多少条边？</a></li>
+<li><a class="reference internal" href="#id1">neo4j数据库支持的最复杂的连接是什么？（比如每个节点都与其他任何一个节点相连）</a></li>
+<li><a class="reference internal" href="#id2">在数据库中，读/写性能跟节点/边的数量有关吗？</a></li>
+<li><a class="reference internal" href="#id3">neo4j数据库支持的读/写并发请求最大数量是多少呢？</a></li>
+<li><a class="reference internal" href="#id4">在数据库集群环境中数据一致性如何保证的呢？</a></li>
+<li><a class="reference internal" href="#id5">当在一个数据库中发生更新操作时如何快速更新其他所有服务器呢？</a></li>
+<li><a class="reference internal" href="#id6">在集群环境中，在不同服务器会出现按比例延迟新增吗？</a></li>
+<li><a class="reference internal" href="#id7">支持在线扩展吗？换句话说，如果我们想新加入一台服务器到集群中需要关闭所有服务器吗？</a></li>
+<li><a class="reference internal" href="#id8">新加入一台服务器到全部同步需要多长时间？</a></li>
+<li><a class="reference internal" href="#id9">重启需要多久呢？</a></li>
+<li><a class="reference internal" href="#id10">是否有备份恢复机制？</a></li>
+<li><a class="reference internal" href="#id11">是否支持跨区集群？跨区集群是否比同区集群性能更低呢？</a></li>
+<li><a class="reference internal" href="#id12">是否有任何指定测控策略用于环境建立之类的需求？</a></li>
+<li><a class="reference internal" href="#id13">写数据库是线程安全的吗？</a></li>
+<li><a class="reference internal" href="#ha">从HA读数据最好的策略是什么？</a></li>
+<li><a class="reference internal" href="#id14">对于获取（如果不存在则创建）这中需求最好的策略是什么？</a></li>
+<li><a class="reference internal" href="#id15">如何锁定服务？</a></li>
+<li><a class="reference internal" href="#id16">数据存储占用空间如何？</a></li>
+<li><a class="reference internal" href="#id17">我如何进行数据库查询？</a></li>
+<li><a class="reference internal" href="#id18">我如何提示Neo4j的性能？</a></li>
+<li><a class="reference internal" href="#id19">独立服务器怎么样？</a></li>
+<li><a class="reference internal" href="#id20">在HA环境中如何使用负载均衡？</a></li>
+<li><a class="reference internal" href="#id21">Neo4j支持那些监控器？</a></li>
+<li><a class="reference internal" href="#id22">我如何导入数据到Neo4j中？</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="appendix_a/index.html"
+                        title="previous chapter">附录 A</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/appendix_b.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="appendix_a/index.html" title="附录 A"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IRD 0.1.0a documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, BGI-Internet 大数据中心，精准医学联盟.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.2.
+    </div>
+  </body>
+</html>
