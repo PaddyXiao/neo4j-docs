@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# IRD documentation build configuration file, created by
+# neo4j documentation build configuration file, created by
 # sphinx-quickstart on Thu Jun  2 16:07:52 2016.
 #
 # This file is execfile()d with the current directory set to its
@@ -63,8 +63,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'IRD'
-copyright = u'2016, BGI-Internet 大数据中心，精准医学联盟'
+project = u'neo4j'
+copyright = u'2016, 肖鹏(xiaopeng2@genomics.cn)'
 author = u'肖鹏'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -148,7 +148,7 @@ todo_include_todos = True
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = u'IRD v0.1.0a'
+# html_title = u'neo4j v0.1.0a'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -248,7 +248,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'IRDdoc'
+htmlhelp_basename = 'neo4jdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -274,7 +274,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'IRD.tex', u'IRD 文档',
+    (master_doc, 'neo4j.tex', u'neo4j 文档',
      u'BGI-Internet 大数据中心', 'manual'),
 ]
 
@@ -310,7 +310,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'hvbase', u'IRD Documentation',
+    (master_doc, 'hvbase', u'neo4j Documentation',
      [author], 1)
 ]
 
@@ -325,8 +325,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'IRD', u'IRD Documentation',
-     author, 'IRD', 'One line description of project.',
+    (master_doc, 'neo4j', u'neo4j Documentation',
+     author, 'neo4j', 'One line description of project.',
      'Miscellaneous'),
 ]
 
