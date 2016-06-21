@@ -11,27 +11,27 @@
     构成一张图的基本元素是节点和关系。在Neo4j中，节点和关系都可以包含属性。
     节点经常被用于表示一些实体，但依赖关系也一样可以表示实体。
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.1.png?raw=true
+    .. figure:: ../_static/figs/image3.1.png
     
     下面让我们认识一个最简单的节点，他只有一个属性，属性名是name,属性值是Marko：
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.2.png?raw=true
+    .. figure:: ../_static/figs/image3.2.png
  
 3.2. 关系
 --------------------
 
     节点之间的关系是图数据库很重要的一部分。通过关系可以找到很多关联的数据，比如节点集合，关系集合以及他们的属性集合。
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.3.png?raw=true
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.4.png?raw=true
+    .. figure:: ../_static/figs/image3.3.png
+    .. figure:: ../_static/figs/image3.4.png
  
     一个关系连接两个节点，必须有一个开始节点和结束节点。
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.5.png?raw=true
+    .. figure:: ../_static/figs/image3.5.png
  
     因为关系总是直接相连的，所以对于一个节点来说，与他关联的关系看起来有输入/输出两个方向，这个特性对于我们遍历图非常有帮助：
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.6.png?raw=true
+    .. figure:: ../_static/figs/image3.6.png
  
     关系在任一方向都会被遍历访问。这意味着我们并不需要在不同方向都新增关系。
 
@@ -39,7 +39,7 @@
 
     特别注意一个节点可以有一个关系是指向自己的：
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.7.png?raw=true
+    .. figure:: ../_static/figs/image3.7.png
  
     为了将来增强遍历图中所有的关系，我们需要为关系设置类型。注意 关键字 type 在这可能会被误解，你其实可以把他简单的理解为一个标签而已。
 
@@ -58,7 +58,7 @@
 
     下面的放里是一个简单的文件系统，包括一些符号软链接：
  
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.8.png?raw=true
+    .. figure:: ../_static/figs/image3.8.png
  
     根据你看到的，你在遍历的时候会用到关系的方向和关系的类型。
     
@@ -81,7 +81,7 @@
     注意
     	null不是一个合法的属性值。 Nulls能代替模仿一个不存在的Key。
         
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.9.png?raw=true
+    .. figure:: ../_static/figs/image3.9.png
  
     表 3.2. 属性值类型
     
@@ -105,15 +105,15 @@
 --------------------
     路径由至少一个节点，通过各种关系连接组成，经常是作为一个查询或者遍历的结果。
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.10.png?raw=true
+    .. figure:: ../_static/figs/image3.10.png
  
     最短的路径是0长度的像下面这样：
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.11.png?raw=true
+    .. figure:: ../_static/figs/image3.11.png
  
     长度为1的路径如下:
     
-    .. image:: https://github.com/PaddyXiao/neo4j-docs/blob/master/docs/images/image3.12.png?raw=true
+    .. figure:: ../_static/figs/image3.12.png
  
 3.5. 遍历（Traversal）
 ------------------------------------
