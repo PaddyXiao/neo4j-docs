@@ -90,7 +90,7 @@
 <p>你既可以使用顶级构件也可以直接引入单个的组件。在这的范例使用的是顶级构件的方式。</p>
 <p>Maven</p>
 <blockquote>
-<div><code class="docutils literal"><span class="pre">Maven</span> <span class="pre">dependency.</span></code></div></blockquote>
+<div><cite>Maven dependency.</cite></div></blockquote>
 <div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -117,6 +117,130 @@
 </pre></div>
 </td></tr></table></div>
 <p>参数 <code class="docutils literal"><span class="pre">artifactId</span></code> 可以在 <cite>editions</cite> 找到。</p>
+<p>Eclipse and Maven</p>
+<blockquote>
+<div><p>在Eclipse中开发，推荐安装插件`m2e plugin`让Maven管理classpath来代替上面的方案。</p>
+<p>这样的话，你既可以通过Maven命令行来编译你的工程，也可以通过Maven命令自动生成一个Eclipse工作环境以便进行开发。</p>
+</div></blockquote>
+<p>Ivy</p>
+<blockquote>
+<div><p>确保能解决来自Maven Central的依赖问题，比如我们在你的&#8217;<cite>ivysettings.xml</cite>&#8216;文件中使用下面的配置选项：</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">&lt;ivysettings&gt;</span> 
+  <span class="nt">&lt;settings</span> <span class="na">defaultResolver=</span><span class="s">&quot;main&quot;</span><span class="nt">/&gt;</span> 
+  <span class="nt">&lt;resolvers&gt;</span> 
+    <span class="nt">&lt;chain</span> <span class="na">name=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span> 
+      <span class="nt">&lt;filesystem</span> <span class="na">name=</span><span class="s">&quot;local&quot;</span><span class="nt">&gt;</span> 
+        <span class="nt">&lt;artifact</span> <span class="na">pattern=</span><span class="s">&quot;${ivy.settings.dir}/repository/[artifact]-[revision].[ext]&quot;</span> <span class="nt">/&gt;</span> 
+      <span class="nt">&lt;/filesystem&gt;</span> 
+      <span class="nt">&lt;ibiblio</span> <span class="na">name=</span><span class="s">&quot;maven_central&quot;</span> <span class="na">root=</span><span class="s">&quot;http://repo1.maven.org/maven2/&quot;</span> <span class="na">m2compatible=</span><span class="s">&quot;true&quot;</span><span class="nt">/&gt;</span> 
+    <span class="nt">&lt;/chain&gt;</span> 
+  <span class="nt">&lt;/resolvers&gt;</span> 
+<span class="nt">&lt;/ivysettings&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>有了这个，你就可以通过增加下面这些内容到你的&#8217;<cite>ivy.xml</cite>&#8216;中来引入Neo4j：</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">&lt;dependencies&gt;</span> 
+  .. 
+  <span class="nt">&lt;dependency</span> <span class="na">org=</span><span class="s">&quot;org.neo4j&quot;</span> <span class="na">name=</span><span class="s">&quot;neo4j&quot;</span> <span class="na">rev=</span><span class="s">&quot;1.8&quot;</span><span class="nt">/&gt;</span> 
+  .. 
+<span class="nt">&lt;/dependencies&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>参数 <code class="docutils literal"><span class="pre">name</span></code> 可以在`editions`找到。</p>
+</div></blockquote>
+<p>Gradle</p>
+<blockquote>
+<div><p>下面的范例演示了用Gradle生成一个脚本来引入Neo4j库文件。</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span>def neo4jVersion = &quot;1.8&quot;
+apply plugin: &#39;java&#39;
+repositories { 
+   mavenCentral() 
+} 
+dependencies { 
+   compile &quot;org.neo4j:neo4j:${neo4jVersion}&quot;
+}
+</pre></div>
+</td></tr></table></div>
+<p>参数 <code class="docutils literal"><span class="pre">coordinates</span></code> (在范例中的 <code class="docutils literal"><span class="pre">org.neo4j:neo4j</span></code> ) 可以在`editions`找到。</p>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>4.1.3. 启动和停止<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>为了创建一个新的数据库或者打开一个已经存在的，你需要实例化一个`EmbeddedGraphDatabase`对象：</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GraphDatabaseFactory</span><span class="o">().</span><span class="na">newEmbeddedDatabase</span><span class="o">(</span> <span class="n">DB_PATH</span> <span class="o">);</span> 
+<span class="n">registerShutdownHook</span><span class="o">(</span> <span class="n">graphDb</span> <span class="o">);</span>
+</pre></div>
+</td></tr></table></div>
+<p><cite>EmbeddedGraphDatabase</cite> 实例可以在多个线程中共享。然而你不能创建多个实例来指向同一个数据库。</p>
+<p>为了停止数据库，你需要调用方法 <cite>shutdown()</cite> ：</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>为了确保Neo4j被正确关闭，你可以为它增加一个关闭钩子方法：</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">registerShutdownHook</span><span class="o">(</span> <span class="kd">final</span> <span class="n">GraphDatabaseService</span> <span class="n">graphDb</span> <span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Registers a shutdown hook for the Neo4j instance so that it</span>
+    <span class="c1">// shuts down nicely when the VM exits (even if you &quot;Ctrl-C&quot; the</span>
+    <span class="c1">// running example before it&#39;s completed)</span>
+    <span class="n">Runtime</span><span class="o">.</span><span class="na">getRuntime</span><span class="o">().</span><span class="na">addShutdownHook</span><span class="o">(</span> <span class="k">new</span> <span class="n">Thread</span><span class="o">()</span>
+    <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span>
+        <span class="o">{</span>
+            <span class="n">graphDb</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span> <span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>如果你只想通过 只读方式 浏览数据库，请使用 <cite>EmbeddedReadOnlyGraphDatabase</cite>。</p>
+<p>想通过配置设置来启动Neo4j，一个Neo4j属性文件可以像下面这样加载：</p>
+<div class="highlight-java"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">GraphDatabaseService</span> <span class="n">graphDb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GraphDatabaseFactory</span><span class="o">().</span>
+<span class="n">newEmbeddedDatabaseBuilder</span><span class="o">(</span> <span class="s">&quot;target/database/location&quot;</span> <span class="o">).</span>
+<span class="n">loadPropertiesFromFile</span><span class="o">(</span> <span class="n">pathToConfig</span> <span class="o">+</span> <span class="s">&quot;neo4j.properties&quot;</span> <span class="o">).</span>
+<span class="n">newGraphDatabase</span><span class="o">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>或者你可以编程创建你自己的 <a href="#id4"><span class="problematic" id="id5">`</span></a>Map&lt;String, String&gt;`来代替。</p>
+<p>想了解更多配置设置的细节，请参考：<cite>embedded-configuration</cite>。</p>
 </div></blockquote>
 </div>
 </div>
@@ -132,6 +256,7 @@
 <li><a class="reference internal" href="#">4.1. 将Neo4j引入到你的项目工程中</a><ul>
 <li><a class="reference internal" href="#id1">4.1.1. 增加Neo4j的库文件到构造路径中</a></li>
 <li><a class="reference internal" href="#id2">4.1.2. 将Neo4j作为一个依赖添加</a></li>
+<li><a class="reference internal" href="#id3">4.1.3. 启动和停止</a></li>
 </ul>
 </li>
 </ul>

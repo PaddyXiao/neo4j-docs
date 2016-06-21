@@ -1,0 +1,5 @@
+<dependencies> 
+  .. 
+  <dependency org="org.neo4j" name="neo4j" rev="1.8"/> 
+  .. 
+</dependencies>

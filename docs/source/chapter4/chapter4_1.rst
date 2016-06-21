@@ -40,7 +40,7 @@
     
     Maven
     
-        ``Maven dependency.``
+        `Maven dependency.`
         
     .. literalinclude:: maven.xml
         :language: xml
@@ -48,7 +48,93 @@
         
     参数 ``artifactId`` 可以在 `editions` 找到。
 
+    Eclipse and Maven
     
+        在Eclipse中开发，推荐安装插件`m2e plugin`让Maven管理classpath来代替上面的方案。
+        
+        这样的话，你既可以通过Maven命令行来编译你的工程，也可以通过Maven命令自动生成一个Eclipse工作环境以便进行开发。
+
+    Ivy
+
+        确保能解决来自Maven Central的依赖问题，比如我们在你的'`ivysettings.xml`'文件中使用下面的配置选项：
+        
+        .. literalinclude:: ivysettings.xml
+            :language: xml
+            :linenos:
+            
+        有了这个，你就可以通过增加下面这些内容到你的'`ivy.xml`'中来引入Neo4j：
+        
+        .. literalinclude:: ivy.xml
+            :language: xml
+            :linenos:
     
+        参数 ``name`` 可以在`editions`找到。
     
+    Gradle
+
+        下面的范例演示了用Gradle生成一个脚本来引入Neo4j库文件。
+        
+        .. literalinclude:: gradle.java
+            :language: java
+            :linenos:
+
+        参数 ``coordinates`` (在范例中的 ``org.neo4j:neo4j`` ) 可以在`editions`找到。
+        
+        
+4.1.3. 启动和停止
+-----------------------------------
+
+    为了创建一个新的数据库或者打开一个已经存在的，你需要实例化一个`EmbeddedGraphDatabase`对象：
     
+    .. literalinclude:: EmbeddedGraphDatabase.java
+        :language: java
+        :linenos:
+            
+    `EmbeddedGraphDatabase` 实例可以在多个线程中共享。然而你不能创建多个实例来指向同一个数据库。
+
+    为了停止数据库，你需要调用方法 `shutdown()` ：
+    
+    .. code-block:: java
+        :linenos:
+        
+        graphDb.shutdown();
+        
+    为了确保Neo4j被正确关闭，你可以为它增加一个关闭钩子方法：
+    
+    .. code-block:: java
+        :linenos:
+        
+        private static void registerShutdownHook( final GraphDatabaseService graphDb ) { 
+            // Registers a shutdown hook for the Neo4j instance so that it 
+            // shuts down nicely when the VM exits (even if you "Ctrl-C" the 
+            // running example before it's completed) 
+            Runtime.getRuntime().addShutdownHook( new Thread() 
+            { 
+                @Override
+                public void run() 
+                { 
+                    graphDb.shutdown(); 
+                } 
+            } ); 
+        }
+
+    如果你只想通过 只读方式 浏览数据库，请使用 `EmbeddedReadOnlyGraphDatabase`。
+
+    想通过配置设置来启动Neo4j，一个Neo4j属性文件可以像下面这样加载：
+    
+    .. code-block:: java
+        :linenos:
+        
+        GraphDatabaseService graphDb = new GraphDatabaseFactory(). 
+        newEmbeddedDatabaseBuilder( "target/database/location" ). 
+        loadPropertiesFromFile( pathToConfig + "neo4j.properties" ). 
+        newGraphDatabase();
+        
+    或者你可以编程创建你自己的 `Map<String, String>`来代替。
+
+    想了解更多配置设置的细节，请参考：`embedded-configuration`。
+
+
+
+
+
