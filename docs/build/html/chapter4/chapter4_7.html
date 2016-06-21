@@ -52,8 +52,68 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>4.7. 图算法范例<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter4-7-index">
+<span id="id1"></span><h1>4.7. 图算法范例<a class="headerlink" href="#chapter4-7-index" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p><strong>提示</strong></p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/test/java/org/neo4j/examples/PathFindingExamplesTest.java">PathFindingExamplesTest.java</a></div></blockquote>
+<p>计算正连个节点之间的最短路径（最少数目的关系）：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Node</span> <span class="n">startNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">middleNode1</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">middleNode2</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">middleNode3</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">endNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">createRelationshipsBetween</span><span class="p">(</span> <span class="n">startNode</span><span class="p">,</span> <span class="n">middleNode1</span><span class="p">,</span> <span class="n">endNode</span> <span class="p">);</span>
+<span class="n">createRelationshipsBetween</span><span class="p">(</span> <span class="n">startNode</span><span class="p">,</span> <span class="n">middleNode2</span><span class="p">,</span> <span class="n">middleNode3</span><span class="p">,</span> <span class="n">endNode</span> <span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Will</span> <span class="n">find</span> <span class="n">the</span> <span class="n">shortest</span> <span class="n">path</span> <span class="n">between</span> <span class="n">startNode</span> <span class="ow">and</span> <span class="n">endNode</span> <span class="n">via</span>
+<span class="o">//</span> <span class="s2">&quot;MY_TYPE&quot;</span> <span class="n">relationships</span> <span class="p">(</span><span class="ow">in</span> <span class="n">OUTGOING</span> <span class="n">direction</span><span class="p">),</span> <span class="n">like</span> <span class="n">f</span><span class="o">.</span><span class="n">ex</span><span class="p">:</span>
+<span class="o">//</span>
+<span class="o">//</span> <span class="p">(</span><span class="n">startNode</span><span class="p">)</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">middleNode1</span><span class="p">)</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">endNode</span><span class="p">)</span>
+<span class="o">//</span>
+<span class="n">PathFinder</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span> <span class="n">finder</span> <span class="o">=</span> <span class="n">GraphAlgoFactory</span><span class="o">.</span><span class="n">shortestPath</span><span class="p">(</span>
+    <span class="n">Traversal</span><span class="o">.</span><span class="n">expanderForTypes</span><span class="p">(</span> <span class="n">ExampleTypes</span><span class="o">.</span><span class="n">MY_TYPE</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">),</span> <span class="mi">15</span> <span class="p">);</span>
+<span class="n">Iterable</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">findAllPaths</span><span class="p">(</span> <span class="n">startNode</span><span class="p">,</span> <span class="n">endNode</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>使用 <a class="reference external" href="http://zh.wikipedia.org/wiki/Dijkstra">迪科斯彻（Dijkstra）</a> 算法解决有向图中任意两个顶点之间的最短路径问题。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">PathFinder</span><span class="o">&lt;</span><span class="n">WeightedPath</span><span class="o">&gt;</span> <span class="n">finder</span> <span class="o">=</span> <span class="n">GraphAlgoFactory</span><span class="o">.</span><span class="n">dijkstra</span><span class="p">(</span>
+<span class="n">Traversal</span><span class="o">.</span><span class="n">expanderForTypes</span><span class="p">(</span> <span class="n">ExampleTypes</span><span class="o">.</span><span class="n">MY_TYPE</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">BOTH</span> <span class="p">),</span> <span class="s2">&quot;cost&quot;</span> <span class="p">);</span>
+
+<span class="n">WeightedPath</span> <span class="n">path</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">findSinglePath</span><span class="p">(</span> <span class="n">nodeA</span><span class="p">,</span> <span class="n">nodeB</span> <span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">weight</span> <span class="k">for</span> <span class="n">the</span> <span class="n">found</span> <span class="n">path</span>
+<span class="n">path</span><span class="o">.</span><span class="n">weight</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>使用 ** A* ** 算法是解决静态路网中求解最短路最有效的方法。</p>
+<p>这儿是我们的范例图：</p>
+<div class="figure">
+<img alt="../_images/image4.8.png" src="../_images/image4.8.png" />
+</div>
+</div></blockquote>
 </div>
 
 
