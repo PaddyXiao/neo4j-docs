@@ -1,11 +1,11 @@
-.. _chapter4_2index:
+.. _chapter4_2_index:
 
 4.2. 你好，世界
 ==================================
     
-    正这里可以学习如何创建和访问节点和关系。关于建立工程环境的信息，请参考：第 4.1 节 “将Neo4j引入到你的项目工程中”。
+    正这里可以学习如何创建和访问节点和关系。关于建立工程环境的信息，请参考：:ref:`第 4.1 节 将Neo4j引入到你的项目工程中 <chapter4_1_index>`。
 
-    从第 2.1 节 “什么是图数据库?”中，我们还记得，一个Neo4j图数据库由以下几部分组成：
+    从 :ref:`第 2.1 节 什么是图数据库? <chapte2_1_index>` 中，我们还记得，一个Neo4j图数据库由以下几部分组成：
     
     - 相互关联的节点 
     - 有一定的关系存在 
@@ -17,5 +17,5 @@
  
     **提示**
     
-        范例源代码下载地址： :ref:`EmbeddedNeo4j.java <https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/EmbeddedNeo4j.java>`
+        范例源代码下载地址：`EmbeddedNeo4j.java <https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/EmbeddedNeo4j.java>`_
 

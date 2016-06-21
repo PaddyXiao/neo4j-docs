@@ -1,3 +1,5 @@
+.. _home_index:
+
 .. IRD documentation master file, created by
    sphinx-quickstart on Thu Jun  2 16:07:52 2016.
    You can adapt this file completely to your liking, but it should at least
