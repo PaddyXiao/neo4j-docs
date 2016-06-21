@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="Java">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4.1. 将Neo4j引入到你的项目工程中 &mdash; neo4j 0.1.0a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
+    <link rel="up" title="第 4 章" href="index.html" />
+    <link rel="next" title="&lt;no title&gt;" href="chapter4_2.html" />
+    <link rel="prev" title="第 4 章" href="index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="chapter4_2.html" title="&lt;no title&gt;"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="第 4 章"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">第 4 章</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="neo4j">
+<h1>4.1. 将Neo4j引入到你的项目工程中<a class="headerlink" href="#neo4j" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>在选择了适合你的平台的editions,edition后，只需要引入Neo4j的jars 文件到你的工程的构造路径中，你就可以在你的工程中使用Neo4j数据库了。下面的章节将展示如何完成引入，要么通过直接改变构造路径，要么使用包依赖管理。</div></blockquote>
+<div class="section" id="id1">
+<h2>4.1.1. 增加Neo4j的库文件到构造路径中<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>可以通过下面任意一种方式得到需要的jar文件:</p>
+<ul class="simple">
+<li>解压 Neo4j 下载的压缩包，我们需要使用的jars文件都包括在lib目录中。</li>
+<li>直接使用Maven中心仓库的jars文件。</li>
+</ul>
+<p>将jars引入到你的项目工程中:</p>
+<dl class="docutils">
+<dt>JDK tools</dt>
+<dd>增加到 -classpath 中</dd>
+</dl>
+<p>Eclipse</p>
+<ul class="simple">
+<li>右键点击工程然后选择 Build Path → Configure Build Path 。在对话框中选择 Add External JARs ，浏览到Neo4j的&#8217;lib/&#8217;目录并选择所有的jar文件。</li>
+<li>另外一种方式是使用 User Libraries。</li>
+</ul>
+<dl class="docutils">
+<dt>IntelliJ IDEA</dt>
+<dd>看 Libraries, Global Libraries, and the Configure Library dialog了解详情。</dd>
+</dl>
+<p>NetBeans</p>
+<ul class="simple">
+<li>在工程的 Libraries 点击鼠标右键，选择 Add JAR/Folder ，浏览到Neo4j的&#8217;lib/&#8217;目录选择里面的所有jar文件。</li>
+<li>你也可以从工程节点来管理库文件。详细情况请查看管理一个工程的classpath。</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.1. 将Neo4j引入到你的项目工程中</a><ul>
+<li><a class="reference internal" href="#id1">4.1.1. 增加Neo4j的库文件到构造路径中</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">第 4 章</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="chapter4_2.html"
+                        title="next chapter">&lt;no title&gt;</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/chapter4/chapter4_1.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="chapter4_2.html" title="&lt;no title&gt;"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="第 4 章"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >第 4 章</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, 肖鹏(xiaopeng2@genomics.cn).
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>
