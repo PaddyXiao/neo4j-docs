@@ -25,9 +25,9 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
-    <link rel="up" title="第 4 章" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="chapter4_2.html" />
-    <link rel="prev" title="第 4 章" href="index.html" /> 
+    <link rel="up" title="第 4 章 在Java应用中使用Neo4j" href="index.html" />
+    <link rel="next" title="4.2. 你好，世界" href="chapter4_2.html" />
+    <link rel="prev" title="第 4 章 在Java应用中使用Neo4j" href="index.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,13 +37,13 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="chapter4_2.html" title="&lt;no title&gt;"
+          <a href="chapter4_2.html" title="4.2. 你好，世界"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="第 4 章"
+          <a href="index.html" title="第 4 章 在Java应用中使用Neo4j"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">第 4 章</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">第 4 章 在Java应用中使用Neo4j</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -65,24 +65,58 @@
 <li>直接使用Maven中心仓库的jars文件。</li>
 </ul>
 <p>将jars引入到你的项目工程中:</p>
-<dl class="docutils">
-<dt>JDK tools</dt>
-<dd>增加到 -classpath 中</dd>
-</dl>
+<p>JDK tools</p>
+<blockquote>
+<div>增加到 -classpath 中</div></blockquote>
 <p>Eclipse</p>
 <ul class="simple">
 <li>右键点击工程然后选择 Build Path → Configure Build Path 。在对话框中选择 Add External JARs ，浏览到Neo4j的&#8217;lib/&#8217;目录并选择所有的jar文件。</li>
 <li>另外一种方式是使用 User Libraries。</li>
 </ul>
-<dl class="docutils">
-<dt>IntelliJ IDEA</dt>
-<dd>看 Libraries, Global Libraries, and the Configure Library dialog了解详情。</dd>
-</dl>
+<p>IntelliJ IDEA</p>
+<blockquote>
+<div>看 Libraries, Global Libraries, and the Configure Library dialog了解详情。</div></blockquote>
 <p>NetBeans</p>
 <ul class="simple">
 <li>在工程的 Libraries 点击鼠标右键，选择 Add JAR/Folder ，浏览到Neo4j的&#8217;lib/&#8217;目录选择里面的所有jar文件。</li>
 <li>你也可以从工程节点来管理库文件。详细情况请查看管理一个工程的classpath。</li>
 </ul>
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h2>4.1.2. 将Neo4j作为一个依赖添加<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>想总览一下主要的Neo4j构件，请查看editions。列在里面的构件都是包含实际Neo4j实现的顶级构件。</p>
+<p>你既可以使用顶级构件也可以直接引入单个的组件。在这的范例使用的是顶级构件的方式。</p>
+<p>Maven</p>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">Maven</span> <span class="pre">dependency.</span></code></div></blockquote>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">&lt;project&gt;</span> 
+... 
+ <span class="nt">&lt;dependencies&gt;</span> 
+  <span class="nt">&lt;dependency&gt;</span> 
+   <span class="nt">&lt;groupId&gt;</span>org.neo4j<span class="nt">&lt;/groupId&gt;</span> 
+   <span class="nt">&lt;artifactId&gt;</span>neo4j<span class="nt">&lt;/artifactId&gt;</span> 
+   <span class="nt">&lt;version&gt;</span>1.8<span class="nt">&lt;/version&gt;</span> 
+  <span class="nt">&lt;/dependency&gt;</span> 
+  ... 
+ <span class="nt">&lt;/dependencies&gt;</span> 
+... 
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p>参数 <code class="docutils literal"><span class="pre">artifactId</span></code> 可以在 <cite>editions</cite> 找到。</p>
 </div></blockquote>
 </div>
 </div>
@@ -97,16 +131,17 @@
   <ul>
 <li><a class="reference internal" href="#">4.1. 将Neo4j引入到你的项目工程中</a><ul>
 <li><a class="reference internal" href="#id1">4.1.1. 增加Neo4j的库文件到构造路径中</a></li>
+<li><a class="reference internal" href="#id2">4.1.2. 将Neo4j作为一个依赖添加</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">第 4 章</a></p>
+                        title="previous chapter">第 4 章 在Java应用中使用Neo4j</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="chapter4_2.html"
-                        title="next chapter">&lt;no title&gt;</a></p>
+                        title="next chapter">4.2. 你好，世界</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -135,13 +170,13 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="chapter4_2.html" title="&lt;no title&gt;"
+          <a href="chapter4_2.html" title="4.2. 你好，世界"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="第 4 章"
+          <a href="index.html" title="第 4 章 在Java应用中使用Neo4j"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="index.html" >第 4 章</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="index.html" >第 4 章 在Java应用中使用Neo4j</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
