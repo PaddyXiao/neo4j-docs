@@ -21,13 +21,13 @@
     .. code-block:: python
         :linenos:
         
-    private static Traverser getFriends( final Node person ) { 
-        TraversalDescription td = Traversal.description() 
-            .breadthFirst() 
-            .relationships( RelTypes.KNOWS, Direction.OUTGOING ) 
-            .evaluator( Evaluators.excludeStartPosition() ); 
-        return td.traverse( person ); 
-    }
+        private static Traverser getFriends( final Node person ) { 
+            TraversalDescription td = Traversal.description() 
+                .breadthFirst() 
+                .relationships( RelTypes.KNOWS, Direction.OUTGOING ) 
+                .evaluator( Evaluators.excludeStartPosition() ); 
+            return td.traverse( person ); 
+        }
     
     
     让我们只想一次真实的遍历查询并打印结果：
@@ -432,11 +432,11 @@
     
         一旦我们有了朋友，而且它们有了状态消息，我们可能想读取我们的朋友的消息动态，按时间倒序排列 — 最新的动态在前面。为了实现这个，我们可以通过下面几个步骤：
     
-        1. 抓取所有的好友动态放入一个列表 — 最新的排前面。 
-        #. 对列表进行排序。 
-        #. 返回列表中的第一个记录。 
-        #. 如果第一个迭代器为空，则把它从列表移除。否则，在这个迭代器中获取下一个记录。 
-        #. 跳转到步骤2直到在列表中没有任何记录。 
+            1. 抓取所有的好友动态放入一个列表 — 最新的排前面。 
+            #. 对列表进行排序。 
+            #. 返回列表中的第一个记录。 
+            #. 如果第一个迭代器为空，则把它从列表移除。否则，在这个迭代器中获取下一个记录。 
+            #. 跳转到步骤2直到在列表中没有任何记录。 
     
     这个队列看起来像 `这样 <http://www.slideshare.net/systay/pattern-activity-stream>`_ 。
     

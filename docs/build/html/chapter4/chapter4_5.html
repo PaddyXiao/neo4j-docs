@@ -66,21 +66,21 @@
 <blockquote>
 <div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/NewMatrix.java">NewMatrix.java</a></div></blockquote>
 <p>朋友以及朋友的朋友.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">Traverser</span> <span class="n">getFriends</span><span class="p">(</span> <span class="n">final</span> <span class="n">Node</span> <span class="n">person</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">TraversalDescription</span> <span class="n">td</span> <span class="o">=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">description</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">breadthFirst</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">relationships</span><span class="p">(</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">KNOWS</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">)</span>
+        <span class="o">.</span><span class="n">evaluator</span><span class="p">(</span> <span class="n">Evaluators</span><span class="o">.</span><span class="n">excludeStartPosition</span><span class="p">()</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">person</span> <span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<dl class="docutils">
-<dt>private static Traverser getFriends( final Node person ) {</dt>
-<dd><dl class="first docutils">
-<dt>TraversalDescription td = Traversal.description()</dt>
-<dd>.breadthFirst()
-.relationships( RelTypes.KNOWS, Direction.OUTGOING )
-.evaluator( Evaluators.excludeStartPosition() );</dd>
-</dl>
-<p class="last">return td.traverse( person );</p>
-</dd>
-</dl>
-<p>}</p>
 <p>让我们只想一次真实的遍历查询并打印结果：</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -582,13 +582,15 @@ At depth 4 =&gt; The Architect
 <p><strong>活动流</strong></p>
 <blockquote>
 <div><p>一旦我们有了朋友，而且它们有了状态消息，我们可能想读取我们的朋友的消息动态，按时间倒序排列 — 最新的动态在前面。为了实现这个，我们可以通过下面几个步骤：</p>
-<ol class="arabic simple">
+<blockquote>
+<div><ol class="arabic simple">
 <li>抓取所有的好友动态放入一个列表 — 最新的排前面。</li>
 <li>对列表进行排序。</li>
 <li>返回列表中的第一个记录。</li>
 <li>如果第一个迭代器为空，则把它从列表移除。否则，在这个迭代器中获取下一个记录。</li>
 <li>跳转到步骤2直到在列表中没有任何记录。</li>
 </ol>
+</div></blockquote>
 </div></blockquote>
 <p>这个队列看起来像 <a class="reference external" href="http://www.slideshare.net/systay/pattern-activity-stream">这样</a> 。</p>
 <p>代码实现像这样：</p>

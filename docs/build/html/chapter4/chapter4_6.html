@@ -52,8 +52,70 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>4.6. 领域实体<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter4-6-index">
+<span id="id1"></span><h1>4.6. 领域实体<a class="headerlink" href="#chapter4-6-index" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>这个地方演示了当使用Neo4j时控制领域实体的一个方法。使用的原则是将实体封装到节点上（这个方法也可以用在关系上）。</p>
+<p><strong>提示</strong></p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/socnet/Person.java">Person.java</a></div></blockquote>
+<p>马上，保存节点并且让它在包里可以被访问：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">final</span> <span class="n">Node</span> <span class="n">underlyingNode</span><span class="p">;</span>
+<span class="n">Person</span><span class="p">(</span> <span class="n">Node</span> <span class="n">personNode</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">underlyingNode</span> <span class="o">=</span> <span class="n">personNode</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">protected</span> <span class="n">Node</span> <span class="n">getUnderlyingNode</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">underlyingNode</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>分配属性给节点：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="n">underlyingNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="n">NAME</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>确保重载这些方法：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@Override</span>
+<span class="n">public</span> <span class="nb">int</span> <span class="n">hashCode</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">underlyingNode</span><span class="o">.</span><span class="n">hashCode</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">boolean</span> <span class="n">equals</span><span class="p">(</span> <span class="n">Object</span> <span class="n">o</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">o</span> <span class="n">instanceof</span> <span class="n">Person</span> <span class="o">&amp;&amp;</span>
+            <span class="n">underlyingNode</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span><span class="n">Person</span><span class="p">)</span><span class="n">o</span> <span class="p">)</span><span class="o">.</span><span class="n">getUnderlyingNode</span><span class="p">()</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nd">@Override</span>
+<span class="n">public</span> <span class="n">String</span> <span class="n">toString</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;Person[&quot;</span> <span class="o">+</span> <span class="n">getName</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
 </div>
 
 
