@@ -53,7 +53,154 @@
           <div class="body" role="main">
             
   <div class="section" id="osgi">
-<h1>4.9. OSGi配置<a class="headerlink" href="#osgi" title="Permalink to this headline">¶</a></h1>
+<span id="chapter4-8-index"></span><h1>4.9. OSGi配置<a class="headerlink" href="#osgi" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div>在 <a class="reference external" href="http://www.osgi.org/">OSGi</a> 关联的上下文比如大量的应用服务器（e.g. <a class="reference external" href="http://glassfish.java.net/">Glassfish</a> ）和基于 <a class="reference external" href="http://www.eclipse.org">Eclipse</a> 的系统中，Neo4j能被明确地建立起来而不是通过Java服务加载机制来发现。</div></blockquote>
+<div class="section" id="simple-osgi-activator">
+<h2>4.9.1. Simple OSGi Activator 脚本<a class="headerlink" href="#simple-osgi-activator" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>如同在下面的范例中看到的一样，为了代替依赖Neo4j内核的类加载，Neo4j Bundle被作为库 bundles，而像 IndexProviders 和 CacheProviders 这样的服务被明确地实例化，配置和注册了秩序。只需要确保必要的jars，所以所有必须的类都被导出并且包括这Activator。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">public</span> <span class="k">class</span> <span class="nc">Neo4jActivator</span> <span class="n">implements</span> <span class="n">BundleActivator</span> <span class="p">{</span>
+
+    <span class="n">private</span> <span class="n">static</span> <span class="n">GraphDatabaseService</span> <span class="n">db</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">serviceRegistration</span><span class="p">;</span>
+    <span class="n">private</span> <span class="n">ServiceRegistration</span> <span class="n">indexServiceRegistration</span><span class="p">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">start</span><span class="p">(</span> <span class="n">BundleContext</span> <span class="n">context</span> <span class="p">)</span> <span class="n">throws</span> <span class="ne">Exception</span>
+    <span class="p">{</span>
+        <span class="o">//</span><span class="n">the</span> <span class="n">cache</span> <span class="n">providers</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">CacheProvider</span><span class="o">&gt;</span> <span class="n">cacheList</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">CacheProvider</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">cacheList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">new</span> <span class="n">SoftCacheProvider</span><span class="p">()</span> <span class="p">);</span>
+
+        <span class="o">//</span><span class="n">the</span> <span class="n">index</span> <span class="n">providers</span>
+        <span class="n">IndexProvider</span> <span class="n">lucene</span> <span class="o">=</span> <span class="n">new</span> <span class="n">LuceneIndexProvider</span><span class="p">();</span>
+        <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IndexProvider</span><span class="o">&gt;</span> <span class="n">provs</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">IndexProvider</span><span class="o">&gt;</span><span class="p">();</span>
+        <span class="n">provs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">lucene</span> <span class="p">);</span>
+        <span class="n">ListIndexIterable</span> <span class="n">providers</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ListIndexIterable</span><span class="p">();</span>
+        <span class="n">providers</span><span class="o">.</span><span class="n">setIndexProviders</span><span class="p">(</span> <span class="n">provs</span> <span class="p">);</span>
+
+        <span class="o">//</span><span class="n">the</span> <span class="n">database</span> <span class="n">setup</span>
+        <span class="n">GraphDatabaseFactory</span> <span class="n">gdbf</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">();</span>
+        <span class="n">gdbf</span><span class="o">.</span><span class="n">setIndexProviders</span><span class="p">(</span> <span class="n">providers</span> <span class="p">);</span>
+        <span class="n">gdbf</span><span class="o">.</span><span class="n">setCacheProviders</span><span class="p">(</span> <span class="n">cacheList</span> <span class="p">);</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">gdbf</span><span class="o">.</span><span class="n">newEmbeddedDatabase</span><span class="p">(</span> <span class="s2">&quot;target/db&quot;</span> <span class="p">);</span>
+
+        <span class="o">//</span><span class="n">the</span> <span class="n">OSGi</span> <span class="n">registration</span>
+        <span class="n">serviceRegistration</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+                <span class="n">GraphDatabaseService</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">db</span><span class="p">,</span> <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="n">String</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="s2">&quot;registered &quot;</span> <span class="o">+</span> <span class="n">serviceRegistration</span><span class="o">.</span><span class="n">getReference</span><span class="p">()</span> <span class="p">);</span>
+        <span class="n">indexServiceRegistration</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">registerService</span><span class="p">(</span>
+                <span class="n">Index</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">()</span><span class="o">.</span><span class="n">forNodes</span><span class="p">(</span> <span class="s2">&quot;nodes&quot;</span> <span class="p">),</span>
+                <span class="n">new</span> <span class="n">Hashtable</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="n">String</span><span class="o">&gt;</span><span class="p">()</span> <span class="p">);</span>
+        <span class="n">Transaction</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">beginTx</span><span class="p">();</span>
+        <span class="k">try</span>
+        <span class="p">{</span>
+            <span class="n">Node</span> <span class="n">firstNode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+            <span class="n">Node</span> <span class="n">secondNode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+            <span class="n">Relationship</span> <span class="n">relationship</span> <span class="o">=</span> <span class="n">firstNode</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span>
+                    <span class="n">secondNode</span><span class="p">,</span> <span class="n">DynamicRelationshipType</span><span class="o">.</span><span class="n">withName</span><span class="p">(</span> <span class="s2">&quot;KNOWS&quot;</span> <span class="p">)</span> <span class="p">);</span>
+
+            <span class="n">firstNode</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello, &quot;</span> <span class="p">);</span>
+            <span class="n">secondNode</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;world!&quot;</span> <span class="p">);</span>
+            <span class="n">relationship</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;brave Neo4j &quot;</span> <span class="p">);</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">()</span><span class="o">.</span><span class="n">forNodes</span><span class="p">(</span> <span class="s2">&quot;nodes&quot;</span> <span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">firstNode</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello&quot;</span> <span class="p">);</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">success</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="n">catch</span> <span class="p">(</span> <span class="ne">Exception</span> <span class="n">e</span> <span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+            <span class="n">throw</span> <span class="n">new</span> <span class="n">RuntimeException</span><span class="p">(</span> <span class="n">e</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">finally</span>
+        <span class="p">{</span>
+            <span class="n">tx</span><span class="o">.</span><span class="n">finish</span><span class="p">();</span>
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">void</span> <span class="n">stop</span><span class="p">(</span> <span class="n">BundleContext</span> <span class="n">context</span> <span class="p">)</span> <span class="n">throws</span> <span class="ne">Exception</span>
+    <span class="p">{</span>
+        <span class="n">serviceRegistration</span><span class="o">.</span><span class="n">unregister</span><span class="p">();</span>
+        <span class="n">indexServiceRegistration</span><span class="o">.</span><span class="n">unregister</span><span class="p">();</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">shutdown</span><span class="p">();</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -62,6 +209,14 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.9. OSGi配置</a><ul>
+<li><a class="reference internal" href="#simple-osgi-activator">4.9.1. Simple OSGi Activator 脚本</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="chapter4_8.html"
                         title="previous chapter">4.8. 读取一个管理配置属性</a></p>
