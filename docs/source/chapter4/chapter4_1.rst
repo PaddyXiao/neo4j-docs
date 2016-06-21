@@ -77,7 +77,7 @@
         下面的范例演示了用Gradle生成一个脚本来引入Neo4j库文件。
         
         .. literalinclude:: gradle.java
-            :language: javascript
+            :language: python
             :linenos:
 
         参数 ``coordinates`` (在范例中的 ``org.neo4j:neo4j`` ) 可以在 `editions` 找到。
@@ -89,21 +89,21 @@
     为了创建一个新的数据库或者打开一个已经存在的，你需要实例化一个 `EmbeddedGraphDatabase` 对象：
     
     .. literalinclude:: EmbeddedGraphDatabase.java
-        :language: javascript
+        :language: python
         :linenos:
             
     `EmbeddedGraphDatabase` 实例可以在多个线程中共享。然而你不能创建多个实例来指向同一个数据库。
 
     为了停止数据库，你需要调用方法 `shutdown()` ：
     
-    .. code-block:: javascript
+    .. code-block:: python
         :linenos:
         
         graphDb.shutdown();
         
     为了确保Neo4j被正确关闭，你可以为它增加一个关闭钩子方法：
     
-    .. code-block:: javascript
+    .. code-block:: python
         :linenos:
         
         private static void registerShutdownHook( final GraphDatabaseService graphDb ) { 
@@ -124,7 +124,7 @@
 
     想通过配置设置来启动Neo4j，一个Neo4j属性文件可以像下面这样加载：
     
-    .. code-block:: javascript
+    .. code-block:: python
         :linenos:
         
         GraphDatabaseService graphDb = new GraphDatabaseFactory(). 

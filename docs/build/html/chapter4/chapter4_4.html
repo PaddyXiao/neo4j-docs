@@ -52,8 +52,135 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>4.4. 基本的单元测试<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter4-4-index">
+<span id="id1"></span><h1>4.4. 基本的单元测试<a class="headerlink" href="#chapter4-4-index" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>Neo4j的单元测试的基本模式通过下面的范例来阐释。</p>
+<p>要访问Neo4j测试功能，你应该把neo4j-kernel &#8216;tests.jar&#8217;新增到你的类路径中。你可以从Maven Central: <a href="#id2"><span class="problematic" id="id3">`</span></a>org.neo4j:neo4j-kernel &lt;http://search.maven.org/&gt;`_下载到需要的jars。</p>
+<p>使用Maven作为一个依赖管理，你通常会正pom.xml中增加依赖配置：</p>
+<div class="highlight-xml"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">&lt;project&gt;</span>
+...
+    <span class="nt">&lt;dependencies&gt;</span>
+     <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.neo4j<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>neo4j-kernel<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${neo4j-version}<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>test-jar<span class="nt">&lt;/type&gt;</span>
+      <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+     <span class="nt">&lt;/dependency&gt;</span>
+     ...
+    <span class="nt">&lt;/dependencies&gt;</span>
+...
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+</td></tr></table></div>
+<p><code class="docutils literal"><span class="pre">${neo4j-version}</span></code> 是Neo4j的版本号。</p>
+<p>到此，我们已经准备好进行单元测试编码了。</p>
+<p>提示</p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/test/java/org/neo4j/examples/Neo4jBasicTest.java">Neo4jBasicTest.java</a></div></blockquote>
+<p>每一次开始单元测试之前，请创建一个干净的数据库：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@Before</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">prepareTestDatabase</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">graphDb</span> <span class="o">=</span> <span class="n">new</span> <span class="n">TestGraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newImpermanentDatabaseBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">newGraphDatabase</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>在测试完成之后，请关闭数据库：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@After</span>
+<span class="n">public</span> <span class="n">void</span> <span class="n">destroyTestDatabase</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">graphDb</span><span class="o">.</span><span class="n">shutdown</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>在测试期间，创建节点并检查它们是否存在，并在一个事务中结束写操作。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Transaction</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">beginTx</span><span class="p">();</span>
+
+<span class="n">Node</span> <span class="n">n</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
+<span class="k">try</span>
+<span class="p">{</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+    <span class="n">n</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Nancy&quot;</span> <span class="p">);</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">success</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="n">catch</span> <span class="p">(</span> <span class="ne">Exception</span> <span class="n">e</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">failure</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">finally</span>
+<span class="p">{</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">finish</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="o">//</span> <span class="n">The</span> <span class="n">node</span> <span class="n">should</span> <span class="n">have</span> <span class="n">an</span> <span class="nb">id</span> <span class="n">greater</span> <span class="n">than</span> <span class="mi">0</span><span class="p">,</span> <span class="n">which</span> <span class="ow">is</span> <span class="n">the</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span>
+<span class="o">//</span> <span class="n">reference</span> <span class="n">node</span><span class="o">.</span>
+<span class="n">assertThat</span><span class="p">(</span> <span class="n">n</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span> <span class="ow">is</span><span class="p">(</span> <span class="n">greaterThan</span><span class="p">(</span> <span class="mi">0</span><span class="n">l</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+
+<span class="o">//</span> <span class="n">Retrieve</span> <span class="n">a</span> <span class="n">node</span> <span class="n">by</span> <span class="n">using</span> <span class="n">the</span> <span class="nb">id</span> <span class="n">of</span> <span class="n">the</span> <span class="n">created</span> <span class="n">node</span><span class="o">.</span> <span class="n">The</span> <span class="nb">id</span><span class="s1">&#39;s and</span>
+<span class="o">//</span> <span class="nb">property</span> <span class="n">should</span> <span class="n">match</span><span class="o">.</span>
+<span class="n">Node</span> <span class="n">foundNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">getNodeById</span><span class="p">(</span> <span class="n">n</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span> <span class="p">);</span>
+<span class="n">assertThat</span><span class="p">(</span> <span class="n">foundNode</span><span class="o">.</span><span class="n">getId</span><span class="p">(),</span> <span class="ow">is</span><span class="p">(</span> <span class="n">n</span><span class="o">.</span><span class="n">getId</span><span class="p">()</span> <span class="p">)</span> <span class="p">);</span>
+<span class="n">assertThat</span><span class="p">(</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="n">foundNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">),</span> <span class="ow">is</span><span class="p">(</span> <span class="s2">&quot;Nancy&quot;</span> <span class="p">)</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>如果你想查看创建数据库的参数配置，你可以这样：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">config</span> <span class="o">=</span> <span class="n">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">config</span><span class="o">.</span><span class="n">put</span><span class="p">(</span> <span class="s2">&quot;neostore.nodestore.db.mapped_memory&quot;</span><span class="p">,</span> <span class="s2">&quot;10M&quot;</span> <span class="p">);</span>
+<span class="n">config</span><span class="o">.</span><span class="n">put</span><span class="p">(</span> <span class="s2">&quot;string_block_size&quot;</span><span class="p">,</span> <span class="s2">&quot;60&quot;</span> <span class="p">);</span>
+<span class="n">config</span><span class="o">.</span><span class="n">put</span><span class="p">(</span> <span class="s2">&quot;array_block_size&quot;</span><span class="p">,</span> <span class="s2">&quot;300&quot;</span> <span class="p">);</span>
+<span class="n">GraphDatabaseService</span> <span class="n">db</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ImpermanentGraphDatabase</span><span class="p">(</span> <span class="n">config</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
 </div>
 
 

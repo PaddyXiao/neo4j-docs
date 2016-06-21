@@ -56,7 +56,7 @@
 <span id="id1"></span><h1>4.2. 你好，世界<a class="headerlink" href="#chapter4-2-index" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><p>正这里可以学习如何创建和访问节点和关系。关于建立工程环境的信息，请参考：<a class="reference internal" href="chapter4_1.html#chapter4-1-index"><span class="std std-ref">第 4.1 节 将Neo4j引入到你的项目工程中</span></a>。</p>
-<p>从:ref:<cite>第 2.1 节 什么是图数据库 &lt;chapter2_1_index&gt;</cite> 中，我们还记得，一个Neo4j图数据库由以下几部分组成：</p>
+<p>从:ref:<a href="#id2"><span class="problematic" id="id3">`</span></a>第 2.1 节 什么是图数据库 &lt;chapter2_1_index&gt;`中，我们还记得，一个Neo4j图数据库由以下几部分组成：</p>
 <ul class="simple">
 <li>相互关联的节点</li>
 <li>有一定的关系存在</li>
@@ -68,6 +68,129 @@
 <blockquote>
 <div>范例源代码下载地址：<a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/EmbeddedNeo4j.java">EmbeddedNeo4j.java</a></div></blockquote>
 </div></blockquote>
+<div class="section" id="id4">
+<h2>4.2.1. 准备图数据库<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>关系类型可以通过 enum 创建。正这个范例中我们之需要一个单独的关系类型。下面是我们的定义：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">enum</span> <span class="n">RelTypes</span> <span class="n">implements</span> <span class="n">RelationshipType</span> <span class="p">{</span>
+    <span class="n">KNOWS</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>我们也准备一些需要用到的参数：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">GraphDatabaseService</span> <span class="n">graphDb</span><span class="p">;</span>
+<span class="n">Node</span> <span class="n">firstNode</span><span class="p">;</span>
+<span class="n">Node</span> <span class="n">secondNode</span><span class="p">;</span>
+<span class="n">Relationship</span> <span class="n">relationship</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>下一步将启动数据库服务器了。逐一如果给定的保持数据库的目录如果不存在，那么它会自动创建。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newEmbeddedDatabase</span><span class="p">(</span> <span class="n">DB_PATH</span> <span class="p">);</span>
+<span class="n">registerShutdownHook</span><span class="p">(</span> <span class="n">graphDb</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>注意：启动一个图数据库是一个非常重（耗费资源）的操作，所以不要每次你需要与数据库进行交互操作时都去启动一个新的实例。这个实例可以被多个线程共享。事务是线程安全的。
+就像你上面所看到的一样，我们注册了一个关闭数据库的钩子用来确保在JVM退出时数据库已经被关闭。现在是时候与数据库进行交互了。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id5">
+<h2>4.2.2. 在一个事务中完成多次写数据库操作<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>所有的写操作（创建，删除以及更新）都是在一个事务中完成的。这是一个有意的设计，因为我们相信事务是使用一个企业级数据库中非常重要的一部分。现在，在Neo4j中的事务处理是非常容易的：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Transaction</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">beginTx</span><span class="p">();</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Updating</span> <span class="n">operations</span> <span class="n">go</span> <span class="n">here</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">success</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">finally</span> <span class="p">{</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">finish</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>要了解更多关于事务的细节，请参考：transactions 和 <a class="reference external" href="http://components.neo4j.org/neo4j/1.8/apidocs/org/neo4j/graphdb/Transaction.html">Java API中的事务接口</a>。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h2>4.2.3. 创建一个小型图数据库<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>现在，让我们来创建一些节点。 API是非常直观的。你也随意查看在 <a class="reference external" href="http://components.neo4j.org/neo4j/1.8/apidocs/">http://components.neo4j.org/neo4j/1.8/apidocs/</a> 的JavaDocs文档。它们也被包括正发行版中。这儿展示了如何创建一个小型图数据库，数据库中包括两个节点并用一个关系相连，节点和关系还包括一些属性：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">firstNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">firstNode</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello, &quot;</span> <span class="p">);</span>
+<span class="n">secondNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">secondNode</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;World!&quot;</span> <span class="p">);</span>
+
+<span class="n">relationship</span> <span class="o">=</span> <span class="n">firstNode</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">secondNode</span><span class="p">,</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">KNOWS</span> <span class="p">);</span>
+<span class="n">relationship</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;brave Neo4j &quot;</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>现在我们有一个图数据库看起来像下面这样：</p>
+<p><cite>图 4.1. Hello World 图数据库</cite></p>
+<div class="figure">
+<img alt="../_images/image4.1.png" src="../_images/image4.1.png" />
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="id7">
+<h2>4.2.4. 打印结果<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>在我们创建我们的图数据库后，让我们从中读取数据并打印结果。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="k">print</span><span class="p">(</span> <span class="n">firstNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span> <span class="p">)</span> <span class="p">);</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="k">print</span><span class="p">(</span> <span class="n">relationship</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span> <span class="p">)</span> <span class="p">);</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="k">print</span><span class="p">(</span> <span class="n">secondNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;message&quot;</span> <span class="p">)</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Hello, brave Neo4j World!
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
+<div class="section" id="id8">
+<h2>4.2.5. 移除数据<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>在这种情况下我们将在提交之前移除数据：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">let</span><span class="s1">&#39;s remove the data</span>
+<span class="n">firstNode</span><span class="o">.</span><span class="n">getSingleRelationship</span><span class="p">(</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">KNOWS</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">();</span>
+<span class="n">firstNode</span><span class="o">.</span><span class="n">delete</span><span class="p">();</span>
+<span class="n">secondNode</span><span class="o">.</span><span class="n">delete</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>注意删除一个仍然有关系的节点，当事务提交是会失败。这是为了确保关系始终有一个开始节点和结束节点。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id9">
+<h2>4.2.6. 关闭图数据库<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>最后，当应用完成后 关闭数据库：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span><span class="o">.</span><span class="n">shutdown</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -76,6 +199,19 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.2. 你好，世界</a><ul>
+<li><a class="reference internal" href="#id4">4.2.1. 准备图数据库</a></li>
+<li><a class="reference internal" href="#id5">4.2.2. 在一个事务中完成多次写数据库操作</a></li>
+<li><a class="reference internal" href="#id6">4.2.3. 创建一个小型图数据库</a></li>
+<li><a class="reference internal" href="#id7">4.2.4. 打印结果</a></li>
+<li><a class="reference internal" href="#id8">4.2.5. 移除数据</a></li>
+<li><a class="reference internal" href="#id9">4.2.6. 关闭图数据库</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="chapter4_1.html"
                         title="previous chapter">4.1. 将Neo4j引入到你的项目工程中</a></p>

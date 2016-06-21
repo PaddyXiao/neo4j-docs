@@ -165,20 +165,20 @@
 <p><strong>Gradle</strong></p>
 <blockquote>
 <div><p>下面的范例演示了用Gradle生成一个脚本来引入Neo4j库文件。</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
 5
 6
 7
-8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">def</span> <span class="nx">neo4jVersion</span> <span class="o">=</span> <span class="s2">&quot;1.8&quot;</span>
-<span class="nx">apply</span> <span class="nx">plugin</span><span class="o">:</span> <span class="s1">&#39;java&#39;</span>
-<span class="nx">repositories</span> <span class="p">{</span> 
-   <span class="nx">mavenCentral</span><span class="p">()</span> 
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">neo4jVersion</span> <span class="o">=</span> <span class="s2">&quot;1.8&quot;</span>
+<span class="nb">apply</span> <span class="n">plugin</span><span class="p">:</span> <span class="s1">&#39;java&#39;</span>
+<span class="n">repositories</span> <span class="p">{</span> 
+   <span class="n">mavenCentral</span><span class="p">()</span> 
 <span class="p">}</span> 
-<span class="nx">dependencies</span> <span class="p">{</span> 
-   <span class="nx">compile</span> <span class="s2">&quot;org.neo4j:neo4j:${neo4jVersion}&quot;</span>
+<span class="n">dependencies</span> <span class="p">{</span> 
+   <span class="nb">compile</span> <span class="s2">&quot;org.neo4j:neo4j:${neo4jVersion}&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
@@ -190,18 +190,18 @@
 <h2>4.1.3. 启动和停止<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>为了创建一个新的数据库或者打开一个已经存在的，你需要实例化一个 <cite>EmbeddedGraphDatabase</cite> 对象：</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">graphDb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GraphDatabaseFactory</span><span class="p">().</span><span class="nx">newEmbeddedDatabase</span><span class="p">(</span> <span class="nx">DB_PATH</span> <span class="p">);</span> 
-<span class="nx">registerShutdownHook</span><span class="p">(</span> <span class="nx">graphDb</span> <span class="p">);</span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newEmbeddedDatabase</span><span class="p">(</span> <span class="n">DB_PATH</span> <span class="p">);</span> 
+<span class="n">registerShutdownHook</span><span class="p">(</span> <span class="n">graphDb</span> <span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p><cite>EmbeddedGraphDatabase</cite> 实例可以在多个线程中共享。然而你不能创建多个实例来指向同一个数据库。</p>
 <p>为了停止数据库，你需要调用方法 <cite>shutdown()</cite> ：</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">graphDb</span><span class="p">.</span><span class="nx">shutdown</span><span class="p">();</span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span><span class="o">.</span><span class="n">shutdown</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
 <p>为了确保Neo4j被正确关闭，你可以为它增加一个关闭钩子方法：</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -213,30 +213,30 @@
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span>private static void registerShutdownHook( final GraphDatabaseService graphDb ) {
-    // Registers a shutdown hook for the Neo4j instance so that it
-    // shuts down nicely when the VM exits (even if you &quot;Ctrl-C&quot; the
-    // running example before it&#39;s completed)
-    Runtime.getRuntime().addShutdownHook( new Thread()
-    {
-        @Override
-        public void run()
-        {
-            graphDb.shutdown();
-        }
-    } );
-}
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">void</span> <span class="n">registerShutdownHook</span><span class="p">(</span> <span class="n">final</span> <span class="n">GraphDatabaseService</span> <span class="n">graphDb</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Registers</span> <span class="n">a</span> <span class="n">shutdown</span> <span class="n">hook</span> <span class="k">for</span> <span class="n">the</span> <span class="n">Neo4j</span> <span class="n">instance</span> <span class="n">so</span> <span class="n">that</span> <span class="n">it</span>
+    <span class="o">//</span> <span class="n">shuts</span> <span class="n">down</span> <span class="n">nicely</span> <span class="n">when</span> <span class="n">the</span> <span class="n">VM</span> <span class="n">exits</span> <span class="p">(</span><span class="n">even</span> <span class="k">if</span> <span class="n">you</span> <span class="s2">&quot;Ctrl-C&quot;</span> <span class="n">the</span>
+    <span class="o">//</span> <span class="n">running</span> <span class="n">example</span> <span class="n">before</span> <span class="n">it</span><span class="s1">&#39;s completed)</span>
+    <span class="n">Runtime</span><span class="o">.</span><span class="n">getRuntime</span><span class="p">()</span><span class="o">.</span><span class="n">addShutdownHook</span><span class="p">(</span> <span class="n">new</span> <span class="n">Thread</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nd">@Override</span>
+        <span class="n">public</span> <span class="n">void</span> <span class="n">run</span><span class="p">()</span>
+        <span class="p">{</span>
+            <span class="n">graphDb</span><span class="o">.</span><span class="n">shutdown</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
 <p>如果你只想通过 只读方式 浏览数据库，请使用 <cite>EmbeddedReadOnlyGraphDatabase</cite> 。</p>
 <p>想通过配置设置来启动Neo4j，一个Neo4j属性文件可以像下面这样加载：</p>
-<div class="highlight-javascript"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">GraphDatabaseService</span> <span class="nx">graphDb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GraphDatabaseFactory</span><span class="p">().</span>
-    <span class="nx">newEmbeddedDatabaseBuilder</span><span class="p">(</span> <span class="s2">&quot;target/database/location&quot;</span> <span class="p">).</span>
-    <span class="nx">loadPropertiesFromFile</span><span class="p">(</span> <span class="nx">pathToConfig</span> <span class="o">+</span> <span class="s2">&quot;neo4j.properties&quot;</span> <span class="p">).</span>
-    <span class="nx">newGraphDatabase</span><span class="p">();</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">GraphDatabaseService</span> <span class="n">graphDb</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span>
+    <span class="n">newEmbeddedDatabaseBuilder</span><span class="p">(</span> <span class="s2">&quot;target/database/location&quot;</span> <span class="p">)</span><span class="o">.</span>
+    <span class="n">loadPropertiesFromFile</span><span class="p">(</span> <span class="n">pathToConfig</span> <span class="o">+</span> <span class="s2">&quot;neo4j.properties&quot;</span> <span class="p">)</span><span class="o">.</span>
+    <span class="n">newGraphDatabase</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
 <p>或者你可以编程创建你自己的 <cite>Map&lt;String, String&gt;</cite> 来代替。</p>

@@ -52,8 +52,97 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>4.3. 带索引的用户数据库<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter4-3-index">
+<span id="id1"></span><h1>4.3. 带索引的用户数据库<a class="headerlink" href="#chapter4-3-index" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>你有一个用户数据库，希望通过名称查找到用户。首先，下面这是我们想创建的数据库结构：</p>
+<p><cite>图 4.2. 用户节点空间预览</cite></p>
+<div class="figure">
+<img alt="chapter4/_static/figs/image4.2.png" src="chapter4/_static/figs/image4.2.png" />
+</div>
+<p>其中，参考节点连接了一个用户参考节点，而真实的所有用户都连接在用户参考节点上面。</p>
+<p>提示</p>
+<blockquote>
+<div>范例中的源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/EmbeddedNeo4jWithIndexing.java">EmbeddedNeo4jWithIndexing.java</a></div></blockquote>
+<p>首先，我们定义要用到的关系类型：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">enum</span> <span class="n">RelTypes</span> <span class="n">implements</span> <span class="n">RelationshipType</span> <span class="p">{</span>
+    <span class="n">USERS_REFERENCE</span><span class="p">,</span>
+    <span class="n">USER</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>然后，我们创建了两个辅助方法来处理用户名称以及往数据库新增用户：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">String</span> <span class="n">idToUserName</span><span class="p">(</span> <span class="n">final</span> <span class="nb">int</span> <span class="nb">id</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;user&quot;</span> <span class="o">+</span> <span class="nb">id</span> <span class="o">+</span> <span class="s2">&quot;@neo4j.org&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">private</span> <span class="n">static</span> <span class="n">Node</span> <span class="n">createAndIndexUser</span><span class="p">(</span> <span class="n">final</span> <span class="n">String</span> <span class="n">username</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">Node</span> <span class="n">node</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="n">USERNAME_KEY</span><span class="p">,</span> <span class="n">username</span> <span class="p">);</span>
+    <span class="n">nodeIndex</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">node</span><span class="p">,</span> <span class="n">USERNAME_KEY</span><span class="p">,</span> <span class="n">username</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">node</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>下一步我们将启动数据库:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">graphDb</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newEmbeddedDatabase</span><span class="p">(</span> <span class="n">DB_PATH</span> <span class="p">);</span>
+<span class="n">nodeIndex</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">index</span><span class="p">()</span><span class="o">.</span><span class="n">forNodes</span><span class="p">(</span> <span class="s2">&quot;nodes&quot;</span> <span class="p">);</span>
+<span class="n">registerShutdownHook</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+<p>是时候新增用户了：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Transaction</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">beginTx</span><span class="p">();</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Create</span> <span class="n">users</span> <span class="n">sub</span> <span class="n">reference</span> <span class="n">node</span>
+    <span class="n">Node</span> <span class="n">usersReferenceNode</span> <span class="o">=</span> <span class="n">graphDb</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+    <span class="n">graphDb</span><span class="o">.</span><span class="n">getReferenceNode</span><span class="p">()</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span>
+        <span class="n">usersReferenceNode</span><span class="p">,</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">USERS_REFERENCE</span> <span class="p">);</span>
+    <span class="o">//</span> <span class="n">Create</span> <span class="n">some</span> <span class="n">users</span> <span class="ow">and</span> <span class="n">index</span> <span class="n">their</span> <span class="n">names</span> <span class="k">with</span> <span class="n">the</span> <span class="n">IndexService</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="nb">int</span> <span class="nb">id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">id</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="nb">id</span><span class="o">++</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">Node</span> <span class="n">userNode</span> <span class="o">=</span> <span class="n">createAndIndexUser</span><span class="p">(</span> <span class="n">idToUserName</span><span class="p">(</span> <span class="nb">id</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="n">usersReferenceNode</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">userNode</span><span class="p">,</span>
+            <span class="n">RelTypes</span><span class="o">.</span><span class="n">USER</span> <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>通过Id查找用户:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">idToFind</span> <span class="o">=</span> <span class="mi">45</span><span class="p">;</span>
+<span class="n">Node</span> <span class="n">foundUser</span> <span class="o">=</span> <span class="n">nodeIndex</span><span class="o">.</span><span class="n">get</span><span class="p">(</span> <span class="n">USERNAME_KEY</span><span class="p">,</span> <span class="n">idToUserName</span><span class="p">(</span> <span class="n">idToFind</span> <span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">getSingle</span><span class="p">();</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="s2">&quot;The username of user &quot;</span> <span class="o">+</span> <span class="n">idToFind</span> <span class="o">+</span> <span class="s2">&quot; is &quot;</span> <span class="o">+</span> <span class="n">foundUser</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="n">USERNAME_KEY</span> <span class="p">)</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
 </div>
 
 
