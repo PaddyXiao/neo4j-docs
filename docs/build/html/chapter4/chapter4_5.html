@@ -70,10 +70,8 @@
 </pre></div>
 </td></tr></table></div>
 <dl class="docutils">
-<dt>private static Traverser getFriends(</dt>
-<dd><blockquote class="first">
-<div>final Node person ) {</div></blockquote>
-<dl class="docutils">
+<dt>private static Traverser getFriends( final Node person ) {</dt>
+<dd><dl class="first docutils">
 <dt>TraversalDescription td = Traversal.description()</dt>
 <dd>.breadthFirst()
 .relationships( RelTypes.KNOWS, Direction.OUTGOING )
@@ -251,15 +249,19 @@ At depth 4 =&gt; The Architect
 </pre></div>
 </td></tr></table></div>
 <p>执行一次遍历查询并返回结果.</p>
-<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Traverser</span> <span class="n">traverser</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">A</span> <span class="p">);</span>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Traverser</span> <span class="n">traverser</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">A</span> <span class="p">);</span>
+<span class="n">PathPrinter</span> <span class="n">pathPrinter</span> <span class="o">=</span> <span class="n">new</span> <span class="n">PathPrinter</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Path</span> <span class="n">path</span> <span class="p">:</span> <span class="n">traverser</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">output</span> <span class="o">+=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">pathToString</span><span class="p">(</span> <span class="n">path</span><span class="p">,</span> <span class="n">pathPrinter</span> <span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<p>PathPrinter pathPrinter = new PathPrinter( &#8220;name&#8221; );
-for ( Path path : traverser )
-{</p>
-<blockquote>
-<div>output += Traversal.pathToString( path, pathPrinter );</div></blockquote>
-<p>}</p>
 <p>输出结果:</p>
 <div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL1</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL2</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL3</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
 </pre></div>
@@ -327,11 +329,9 @@ for ( Path path : traverser )
 </pre></div>
 </td></tr></table></div>
 <p>为了了解更多关于 Path 的有选择的输出的细节，请参考：<a class="reference external" href="http://components.neo4j.org/neo4j/1.8/apidocs/org/neo4j/kernel/Traversal.html">Traversal类</a> 。</p>
-<blockquote>
-<div><p><cite>注意</cite></p>
+<p><strong>注意</strong></p>
 <blockquote>
 <div>下面的范例使用了一个已经废弃的遍历API。它与新的遍历查询API共享底层实现，所以它们的性能是一样的。比较起来它提供的功能非常有限。</div></blockquote>
-</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="api">

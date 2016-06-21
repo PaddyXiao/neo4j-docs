@@ -21,14 +21,14 @@
     .. code-block:: python
         :linenos:
         
-    private static Traverser getFriends( 
-            final Node person ) { 
+    private static Traverser getFriends( final Node person ) { 
         TraversalDescription td = Traversal.description() 
-                .breadthFirst() 
-                .relationships( RelTypes.KNOWS, Direction.OUTGOING ) 
-                .evaluator( Evaluators.excludeStartPosition() ); 
+            .breadthFirst() 
+            .relationships( RelTypes.KNOWS, Direction.OUTGOING ) 
+            .evaluator( Evaluators.excludeStartPosition() ); 
         return td.traverse( person ); 
     }
+    
     
     让我们只想一次真实的遍历查询并打印结果：
     
@@ -162,11 +162,11 @@
         :linenos:
         
         Traverser traverser = td.traverse( A ); 
-    PathPrinter pathPrinter = new PathPrinter( "name" ); 
-    for ( Path path : traverser ) 
-    { 
-        output += Traversal.pathToString( path, pathPrinter ); 
-    }
+        PathPrinter pathPrinter = new PathPrinter( "name" ); 
+        for ( Path path : traverser ) 
+        { 
+            output += Traversal.pathToString( path, pathPrinter ); 
+        }
 
     输出结果:
     
@@ -213,7 +213,7 @@
         
     为了了解更多关于 Path 的有选择的输出的细节，请参考：`Traversal类 <http://components.neo4j.org/neo4j/1.8/apidocs/org/neo4j/kernel/Traversal.html>`_ 。
  
-     `注意` 
+    **注意**
 
     	下面的范例使用了一个已经废弃的遍历API。它与新的遍历查询API共享底层实现，所以它们的性能是一样的。比较起来它提供的功能非常有限。
 
