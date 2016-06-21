@@ -5,7 +5,7 @@
 
     Neo4j的单元测试的基本模式通过下面的范例来阐释。
     
-    要访问Neo4j测试功能，你应该把neo4j-kernel 'tests.jar'新增到你的类路径中。你可以从Maven Central: `org.neo4j:neo4j-kernel <http://search.maven.org/>`_下载到需要的jars。
+    要访问Neo4j测试功能，你应该把neo4j-kernel 'tests.jar'新增到你的类路径中。你可以从Maven Central: `org.neo4j:neo4j-kernel <http://search.maven.org/>`_ 下载到需要的jars。
     
     使用Maven作为一个依赖管理，你通常会正pom.xml中增加依赖配置：
     

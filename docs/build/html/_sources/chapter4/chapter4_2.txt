@@ -5,7 +5,7 @@
     
     正这里可以学习如何创建和访问节点和关系。关于建立工程环境的信息，请参考：:ref:`第 4.1 节 将Neo4j引入到你的项目工程中 <chapter4_1_index>`。
 
-    从:ref:`第 2.1 节 什么是图数据库 <chapter2_1_index>`中，我们还记得，一个Neo4j图数据库由以下几部分组成：
+    从 :ref:`第 2.1 节 什么是图数据库 <chapter2_1_index>` 中，我们还记得，一个Neo4j图数据库由以下几部分组成：
     
     - 相互关联的节点 
     - 有一定的关系存在 
@@ -98,7 +98,7 @@
 
     在我们创建我们的图数据库后，让我们从中读取数据并打印结果。
     
-    .. code-block:: python
+    .. code-block:: python 
         :linenos:
         
         System.out.print( firstNode.getProperty( "message" ) ); 
@@ -107,7 +107,7 @@
     
     输出结果：
     
-    .. code-block:: python
+    .. code-block:: python 
         :linenos:
     
         Hello, brave Neo4j World!

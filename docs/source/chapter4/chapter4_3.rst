@@ -7,7 +7,7 @@
 
     `图 4.2. 用户节点空间预览`
     
-    .. figure:: _static/figs/image4.2.png
+    .. figure:: ../_static/figs/image4.2.png
     
     其中，参考节点连接了一个用户参考节点，而真实的所有用户都连接在用户参考节点上面。
  
