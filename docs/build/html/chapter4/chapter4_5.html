@@ -52,8 +52,577 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>4.5. 遍历查询<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="chapter4-5-index">
+<span id="id1"></span><h1>4.5. 遍历查询<a class="headerlink" href="#chapter4-5-index" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>了解更多关于遍历查询的信息，请参考：tutorial-traversal。</p>
+<p>了解更多关于遍历查询范例的信息，请参考：:ref: <cite>第 7 章 数据模型范例 &lt;chapter7_index&gt;</cite> 。</p>
+</div></blockquote>
+<div class="section" id="id2">
+<h2>4.5.1. 黑客帝国<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>对于上面的黑客帝国范例的遍历查询，这次使用新的遍历API：</p>
+<p>提示</p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/NewMatrix.java">NewMatrix.java</a></div></blockquote>
+<p>朋友以及朋友的朋友.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
+</pre></div>
+</td></tr></table></div>
+<dl class="docutils">
+<dt>private static Traverser getFriends(</dt>
+<dd><blockquote class="first">
+<div>final Node person ) {</div></blockquote>
+<dl class="docutils">
+<dt>TraversalDescription td = Traversal.description()</dt>
+<dd>.breadthFirst()
+.relationships( RelTypes.KNOWS, Direction.OUTGOING )
+.evaluator( Evaluators.excludeStartPosition() );</dd>
+</dl>
+<p class="last">return td.traverse( person );</p>
+</dd>
+</dl>
+<p>}</p>
+<p>让我们只想一次真实的遍历查询并打印结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">numberOfFriends</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">neoNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;s friends:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="n">Traverser</span> <span class="n">friendsTraverser</span> <span class="o">=</span> <span class="n">getFriends</span><span class="p">(</span> <span class="n">neoNode</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Path</span> <span class="n">friendPath</span> <span class="p">:</span> <span class="n">friendsTraverser</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;At depth &quot;</span> <span class="o">+</span> <span class="n">friendPath</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; =&gt; &quot;</span>
+              <span class="o">+</span> <span class="n">friendPath</span><span class="o">.</span><span class="n">endNode</span><span class="p">()</span>
+                      <span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">numberOfFriends</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Number of friends found: &quot;</span> <span class="o">+</span> <span class="n">numberOfFriends</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Thomas Anderson&#39;s friends:
+At depth 1 =&gt; Trinity
+At depth 1 =&gt; Morpheus
+At depth 2 =&gt; Cypher
+At depth 3 =&gt; Agent Smith
+找到朋友的数量: 4
+</pre></div>
+</td></tr></table></div>
+<p>谁编写了黑客帝国？</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">Traverser</span> <span class="n">findHackers</span><span class="p">(</span> <span class="n">final</span> <span class="n">Node</span> <span class="n">startNode</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">TraversalDescription</span> <span class="n">td</span> <span class="o">=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">description</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">breadthFirst</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">relationships</span><span class="p">(</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">CODED_BY</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">)</span>
+            <span class="o">.</span><span class="n">relationships</span><span class="p">(</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">KNOWS</span><span class="p">,</span> <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">)</span>
+            <span class="o">.</span><span class="n">evaluator</span><span class="p">(</span>
+                    <span class="n">Evaluators</span><span class="o">.</span><span class="n">includeWhereLastRelationshipTypeIs</span><span class="p">(</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">CODED_BY</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">startNode</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>打印输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;Hackers:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="nb">int</span> <span class="n">numberOfHackers</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">Traverser</span> <span class="n">traverser</span> <span class="o">=</span> <span class="n">findHackers</span><span class="p">(</span> <span class="n">getNeoNode</span><span class="p">()</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Path</span> <span class="n">hackerPath</span> <span class="p">:</span> <span class="n">traverser</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;At depth &quot;</span> <span class="o">+</span> <span class="n">hackerPath</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; =&gt; &quot;</span>
+              <span class="o">+</span> <span class="n">hackerPath</span><span class="o">.</span><span class="n">endNode</span><span class="p">()</span>
+                      <span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">numberOfHackers</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Number of hackers found: &quot;</span> <span class="o">+</span> <span class="n">numberOfHackers</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>现在我们知道是谁编写了黑客帝国:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Hackers:
+At depth 4 =&gt; The Architect
+找到hackers的数量: 1
+</pre></div>
+</td></tr></table></div>
+<p>游走一个有序路径</p>
+<p>这个范例展示了如何通过一个路径上下文控制一条路径的表现。</p>
+<p>提示</p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/orderedpath/OrderedPath.java">OrderedPath.java</a></div></blockquote>
+<p>创建一个图数据库.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Node</span> <span class="n">A</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">B</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">C</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">Node</span> <span class="n">D</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createNode</span><span class="p">();</span>
+<span class="n">A</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">B</span><span class="p">,</span> <span class="n">REL1</span> <span class="p">);</span>
+<span class="n">B</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">C</span><span class="p">,</span> <span class="n">REL2</span> <span class="p">);</span>
+<span class="n">C</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">D</span><span class="p">,</span> <span class="n">REL3</span> <span class="p">);</span>
+<span class="n">A</span><span class="o">.</span><span class="n">createRelationshipTo</span><span class="p">(</span> <span class="n">C</span><span class="p">,</span> <span class="n">REL2</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<div class="figure">
+<img alt="../_images/image4.3.png" src="../_images/image4.3.png" />
+</div>
+<p>现在，关系 ( REL1 → REL2 → REL3 ) 的顺序保存在 一个 <code class="docutils literal"><span class="pre">ArrayList</span></code> 对象中。当遍历的时候，Evaluator 能针对它进行检查，确保只有拥有预定义关系顺序的路径才会被包括并返回：</p>
+<p>定义如何游走这个路径.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">final</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">RelationshipType</span><span class="o">&gt;</span> <span class="n">orderedPathContext</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">RelationshipType</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">orderedPathContext</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">REL1</span> <span class="p">);</span>
+<span class="n">orderedPathContext</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">withName</span><span class="p">(</span> <span class="s2">&quot;REL2&quot;</span> <span class="p">)</span> <span class="p">);</span>
+<span class="n">orderedPathContext</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">withName</span><span class="p">(</span> <span class="s2">&quot;REL3&quot;</span> <span class="p">)</span> <span class="p">);</span>
+<span class="n">TraversalDescription</span> <span class="n">td</span> <span class="o">=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">description</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">evaluator</span><span class="p">(</span> <span class="n">new</span> <span class="n">Evaluator</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nd">@Override</span>
+        <span class="n">public</span> <span class="n">Evaluation</span> <span class="n">evaluate</span><span class="p">(</span> <span class="n">final</span> <span class="n">Path</span> <span class="n">path</span> <span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">path</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">return</span> <span class="n">Evaluation</span><span class="o">.</span><span class="n">EXCLUDE_AND_CONTINUE</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">RelationshipType</span> <span class="n">expectedType</span> <span class="o">=</span> <span class="n">orderedPathContext</span><span class="o">.</span><span class="n">get</span><span class="p">(</span> <span class="n">path</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">);</span>
+            <span class="n">boolean</span> <span class="n">isExpectedType</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">lastRelationship</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">isType</span><span class="p">(</span> <span class="n">expectedType</span> <span class="p">);</span>
+            <span class="n">boolean</span> <span class="n">included</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="n">orderedPathContext</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+                               <span class="o">&amp;&amp;</span> <span class="n">isExpectedType</span><span class="p">;</span>
+            <span class="n">boolean</span> <span class="n">continued</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">orderedPathContext</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+                                <span class="o">&amp;&amp;</span> <span class="n">isExpectedType</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">Evaluation</span><span class="o">.</span><span class="n">of</span><span class="p">(</span> <span class="n">included</span><span class="p">,</span> <span class="n">continued</span> <span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>执行一次遍历查询并返回结果.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Traverser</span> <span class="n">traverser</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">A</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>PathPrinter pathPrinter = new PathPrinter( &#8220;name&#8221; );
+for ( Path path : traverser )
+{</p>
+<blockquote>
+<div>output += Traversal.pathToString( path, pathPrinter );</div></blockquote>
+<p>}</p>
+<p>输出结果:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL1</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">B</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL2</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">C</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">REL3</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>在这种情况下我们使用一个自定义类来格式化路径输出。下面是它的具体实现：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">static</span> <span class="k">class</span> <span class="nc">PathPrinter</span> <span class="n">implements</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">PathDescriptor</span><span class="o">&lt;</span><span class="n">Path</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="n">private</span> <span class="n">final</span> <span class="n">String</span> <span class="n">nodePropertyKey</span><span class="p">;</span>
+
+    <span class="n">public</span> <span class="n">PathPrinter</span><span class="p">(</span> <span class="n">String</span> <span class="n">nodePropertyKey</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">nodePropertyKey</span> <span class="o">=</span> <span class="n">nodePropertyKey</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">nodeRepresentation</span><span class="p">(</span> <span class="n">Path</span> <span class="n">path</span><span class="p">,</span> <span class="n">Node</span> <span class="n">node</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="n">nodePropertyKey</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">String</span> <span class="n">relationshipRepresentation</span><span class="p">(</span> <span class="n">Path</span> <span class="n">path</span><span class="p">,</span> <span class="n">Node</span> <span class="n">from</span><span class="p">,</span>
+            <span class="n">Relationship</span> <span class="n">relationship</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">String</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;--&quot;</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">from</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span> <span class="n">relationship</span><span class="o">.</span><span class="n">getEndNode</span><span class="p">()</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&lt;--&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;--&gt;&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="n">relationship</span><span class="o">.</span><span class="n">getType</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>为了了解更多关于 Path 的有选择的输出的细节，请参考：<a class="reference external" href="http://components.neo4j.org/neo4j/1.8/apidocs/org/neo4j/kernel/Traversal.html">Traversal类</a> 。</p>
+<blockquote>
+<div><p><cite>注意</cite></p>
+<blockquote>
+<div>下面的范例使用了一个已经废弃的遍历API。它与新的遍历查询API共享底层实现，所以它们的性能是一样的。比较起来它提供的功能非常有限。</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="api">
+<h2>4.5.2. 老的遍历查询 API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>这是我们想遍历查询的第一个图数据库：</p>
+<p>图 4.3. 黑客帝国节点空间预览</p>
+<div class="figure">
+<img alt="../_images/image4.4.png" src="../_images/image4.4.png" />
+</div>
+<p>提示</p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/embedded-examples/src/main/java/org/neo4j/examples/Matrix.java">Matrix.java</a></div></blockquote>
+<p>朋友以及朋友的朋友.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">private</span> <span class="n">static</span> <span class="n">Traverser</span> <span class="n">getFriends</span><span class="p">(</span> <span class="n">final</span> <span class="n">Node</span> <span class="n">person</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">Order</span><span class="o">.</span><span class="n">BREADTH_FIRST</span><span class="p">,</span>
+            <span class="n">StopEvaluator</span><span class="o">.</span><span class="n">END_OF_GRAPH</span><span class="p">,</span>
+            <span class="n">ReturnableEvaluator</span><span class="o">.</span><span class="n">ALL_BUT_START_NODE</span><span class="p">,</span> <span class="n">RelTypes</span><span class="o">.</span><span class="n">KNOWS</span><span class="p">,</span>
+            <span class="n">Direction</span><span class="o">.</span><span class="n">OUTGOING</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>让我们执行一次真实的遍历查询并打印结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nb">int</span> <span class="n">numberOfFriends</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="n">neoNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;s friends:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="n">Traverser</span> <span class="n">friendsTraverser</span> <span class="o">=</span> <span class="n">getFriends</span><span class="p">(</span> <span class="n">neoNode</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Node</span> <span class="n">friendNode</span> <span class="p">:</span> <span class="n">friendsTraverser</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;At depth &quot;</span> <span class="o">+</span>
+                <span class="n">friendsTraverser</span><span class="o">.</span><span class="n">currentPosition</span><span class="p">()</span><span class="o">.</span><span class="n">depth</span><span class="p">()</span> <span class="o">+</span>
+                <span class="s2">&quot; =&gt; &quot;</span> <span class="o">+</span>
+                <span class="n">friendNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">numberOfFriends</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Number of friends found: &quot;</span> <span class="o">+</span> <span class="n">numberOfFriends</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>下面是输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Thomas Anderson 的朋友们:
+At depth 1 =&gt; Trinity
+At depth 1 =&gt; Morpheus
+At depth 2 =&gt; Cypher
+At depth 3 =&gt; Agent Smith
+一共找到朋友数量: 4
+</pre></div>
+</td></tr></table></div>
+<p>是谁编写了黑客帝国呢?</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span>private static Traverser findHackers( final Node startNode ) {
+    return startNode.traverse( Order.BREADTH_FIRST,
+            StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
+    {
+        @Override
+        public boolean isReturnableNode(
+                final TraversalPosition currentPos )
+        {
+            return !currentPos.isStartNode()
+            &amp;&amp; currentPos.lastRelationshipTraversed()
+            .isType( RelTypes.CODED_BY );
+        }
+    }, RelTypes.CODED_BY, Direction.OUTGOING, RelTypes.KNOWS,
+    Direction.OUTGOING );
+}
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;Hackers:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="nb">int</span> <span class="n">numberOfHackers</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">Traverser</span> <span class="n">traverser</span> <span class="o">=</span> <span class="n">findHackers</span><span class="p">(</span> <span class="n">getNeoNode</span><span class="p">()</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Node</span> <span class="n">hackerNode</span> <span class="p">:</span> <span class="n">traverser</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;At depth &quot;</span> <span class="o">+</span>
+                <span class="n">traverser</span><span class="o">.</span><span class="n">currentPosition</span><span class="p">()</span><span class="o">.</span><span class="n">depth</span><span class="p">()</span> <span class="o">+</span>
+                <span class="s2">&quot; =&gt; &quot;</span> <span class="o">+</span>
+                <span class="n">hackerNode</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="n">numberOfHackers</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Number of hackers found: &quot;</span> <span class="o">+</span> <span class="n">numberOfHackers</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+<p>现在我们知道是谁编写了黑客帝国:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span>Hackers:
+At depth 4 =&gt; The Architect
+找到hackers的数量: 1
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>4.5.3. 在遍历查询中的唯一路径<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>这个范例演示了节点唯一性的使用。下面是一个想象的有多个负责人的领域图，这些负责人有它们增加的宠物，而这些宠物又生产了它的后代。</p>
+<p><cite>图 4.4. 后代范例图</cite></p>
+<div class="figure">
+<img alt="../_images/image4.5.png" src="../_images/image4.5.png" />
+</div>
+<p>为了返回 Pet0 的所有后代，要求与 Pet0 必须有 owns 和 Principal1 关系（实际上只有 Pet1 和 Pet3 ），遍历查询的 <cite>Uniqueness</cite> 应该设置成 <strong>NODE_PATH</strong> 来代替默认的 <strong>NODE_GLOBAL</strong> 以至于节点可以被遍历不止一次，而且那些有不同节点但能有一些相同的路径（比如开始节点和结束节点）也能被返回。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">final</span> <span class="n">Node</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span> <span class="s2">&quot;Principal1&quot;</span> <span class="p">);</span>
+<span class="n">TraversalDescription</span> <span class="n">td</span> <span class="o">=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">description</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">uniqueness</span><span class="p">(</span> <span class="n">Uniqueness</span><span class="o">.</span><span class="n">NODE_PATH</span> <span class="p">)</span>
+        <span class="o">.</span><span class="n">evaluator</span><span class="p">(</span> <span class="n">new</span> <span class="n">Evaluator</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nd">@Override</span>
+    <span class="n">public</span> <span class="n">Evaluation</span> <span class="n">evaluate</span><span class="p">(</span> <span class="n">Path</span> <span class="n">path</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">path</span><span class="o">.</span><span class="n">endNode</span><span class="p">()</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span> <span class="n">target</span> <span class="p">)</span> <span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="n">Evaluation</span><span class="o">.</span><span class="n">INCLUDE_AND_PRUNE</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">Evaluation</span><span class="o">.</span><span class="n">EXCLUDE_AND_CONTINUE</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span> <span class="p">);</span>
+
+<span class="n">Traverser</span> <span class="n">results</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">start</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>这将返回下面的路径:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">descendant</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;--</span><span class="p">[</span><span class="n">owns</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">--</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">descendant</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">&lt;--</span><span class="p">[</span><span class="n">owns</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span><span class="o">--</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<p>在 <cite>path.toString()</cite> 的默认实现中，(1)&#8211;[knows,2]&#8211;&gt;(4) 表示一个ID=1的节点通过一个ID=2，关系类型为 knows 的关系连接到了一个ID=4的节点上。</p>
+<p>让我们从一个旧的中创建一个新的 <cite>TraversalDescription</cite> ，并且设置 <cite>uniqueness</cite> 为 <strong>NODE_GLOBAL</strong> 来查看它们之间的区别。</p>
+<p>提示</p>
+<blockquote>
+<div><cite>TraversalDescription</cite> 对象是不变的，因此我们必须使用一个新的实例来返回新的 <cite>uniqueness</cite> 设置。</div></blockquote>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">TraversalDescription</span> <span class="n">nodeGlobalTd</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">uniqueness</span><span class="p">(</span> <span class="n">Uniqueness</span><span class="o">.</span><span class="n">NODE_GLOBAL</span> <span class="p">);</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">nodeGlobalTd</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span> <span class="n">start</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>现在只有一条路径返回:</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">--</span><span class="p">[</span><span class="n">descendant</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">--&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;--</span><span class="p">[</span><span class="n">owns</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">--</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h2>4.5.4. 社交网络<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>注意: 下面的范例使用了处于实验阶段的遍历查询API。</p>
+<p>社交网络（在互联网上也被称为社交图）是天然的用图来表示的模型。下面的范例演示了一个非常简单的社交模型，它连接了朋友并关注了好友动态。</p>
+<p>提示</p>
+<blockquote>
+<div>范例源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/tree/1.8/embedded-examples/src/main/java/org/neo4j/examples/socnet">socnet</a></div></blockquote>
+<p>简单的社交模型</p>
+<p>图 4.5. 社交网络数据模型</p>
+<div class="figure">
+<img alt="../_images/image4.6.png" src="../_images/image4.6.png" />
+</div>
+<p>一个社交网络的数据模型是简漂亮的：有名称的 <cite>Persons</cite> 和有时间戳文本的 <cite>StatusUpdates</cite> 。这些实体然后通过特殊的关系连接在一起。</p>
+<ul>
+<li><p class="first">Person</p>
+<blockquote>
+<div><ul class="simple">
+<li>friend: 连接两个不同 Person 实例的关系 (不能连接自己)</li>
+<li>status: 连接到最近的 StatusUpdate</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">StatusUpdate</p>
+<blockquote>
+<div><ul class="simple">
+<li>next: 指向在主线上的下一个 StatusUpdate ，是在当前这个状态更新之前发生的</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>状态图实例</p>
+<p>一个 <strong>Person</strong> 的 <strong>StatusUpdate</strong> 列表 是一个链表。表头（最近动态）可以通过下一个 <strong>status</strong> 找到。每一个随后的 <strong>StatusUpdate</strong> 都通过关系 next 相连。</p>
+<p>这是一个 Andreas Kollegger 微博记录图早上走路上班的范例：</p>
+<div class="figure">
+<img alt="../_images/image4.7.png" src="../_images/image4.7.png" />
+</div>
+<p>为了读取状态更新情况，我们可以创建一个遍历查询，比如：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">TraversalDescription</span> <span class="n">traversal</span> <span class="o">=</span> <span class="n">Traversal</span><span class="o">.</span><span class="n">description</span><span class="p">()</span><span class="o">.</span>
+    <span class="n">depthFirst</span><span class="p">()</span><span class="o">.</span>
+    <span class="n">relationships</span><span class="p">(</span> <span class="n">NEXT</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>这给了我们一个遍历查询，它将从一个 <strong>StatusUpdate</strong> 开始，并一直跟随状态的主线直到它们运行结束。遍历查询是懒加载模式所以当我们处理成千上万状态的时候性能一样很好 — 除非我们真实使用它们，否在它们不会被加载。</p>
+<p><strong>活动流</strong></p>
+<blockquote>
+<div><p>一旦我们有了朋友，而且它们有了状态消息，我们可能想读取我们的朋友的消息动态，按时间倒序排列 — 最新的动态在前面。为了实现这个，我们可以通过下面几个步骤：</p>
+<ol class="arabic simple">
+<li>抓取所有的好友动态放入一个列表 — 最新的排前面。</li>
+<li>对列表进行排序。</li>
+<li>返回列表中的第一个记录。</li>
+<li>如果第一个迭代器为空，则把它从列表移除。否则，在这个迭代器中获取下一个记录。</li>
+<li>跳转到步骤2直到在列表中没有任何记录。</li>
+</ol>
+</div></blockquote>
+<p>这个队列看起来像 <a class="reference external" href="http://www.slideshare.net/systay/pattern-activity-stream">这样</a> 。</p>
+<p>代码实现像这样：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span>PositionedIterator&lt;StatusUpdate&gt; first = statuses.get(0);
+StatusUpdate returnVal = first.current();
+
+if ( !first.hasNext() )
+{
+    statuses.remove( 0 );
+}
+else
+{
+    first.next();
+    sort();
+}
+
+return returnVal;
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
 </div>
 
 
@@ -62,6 +631,17 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.5. 遍历查询</a><ul>
+<li><a class="reference internal" href="#id2">4.5.1. 黑客帝国</a></li>
+<li><a class="reference internal" href="#api">4.5.2. 老的遍历查询 API</a></li>
+<li><a class="reference internal" href="#id3">4.5.3. 在遍历查询中的唯一路径</a></li>
+<li><a class="reference internal" href="#id4">4.5.4. 社交网络</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="chapter4_4.html"
                         title="previous chapter">4.4. 基本的单元测试</a></p>
