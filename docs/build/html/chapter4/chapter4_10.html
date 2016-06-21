@@ -53,7 +53,121 @@
           <div class="body" role="main">
             
   <div class="section" id="javacypher">
-<h1>4.10. 在Java中执行Cypher查询<a class="headerlink" href="#javacypher" title="Permalink to this headline">¶</a></h1>
+<span id="chapter4-10-index"></span><h1>4.10. 在Java中执行Cypher查询<a class="headerlink" href="#javacypher" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p><strong>提示</strong></p>
+<blockquote>
+<div>源代码下载地址： <a class="reference external" href="https://github.com/neo4j/community/blob/1.8/cypher/src/test/java/org/neo4j/cypher/javacompat/JavaQuery.java">JavaQuery.java</a></div></blockquote>
+<p>在Java中，你能使用cypher-query-lang,Cypher查询语言像下面这样：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">GraphDatabaseService</span> <span class="n">db</span> <span class="o">=</span> <span class="n">new</span> <span class="n">GraphDatabaseFactory</span><span class="p">()</span><span class="o">.</span><span class="n">newEmbeddedDatabase</span><span class="p">(</span> <span class="n">DB_PATH</span> <span class="p">);</span>
+<span class="o">//</span> <span class="n">add</span> <span class="n">some</span> <span class="n">data</span> <span class="n">first</span>
+<span class="n">Transaction</span> <span class="n">tx</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">beginTx</span><span class="p">();</span>
+<span class="k">try</span>
+<span class="p">{</span>
+    <span class="n">Node</span> <span class="n">refNode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getReferenceNode</span><span class="p">();</span>
+    <span class="n">refNode</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;reference node&quot;</span> <span class="p">);</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">success</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="k">finally</span>
+<span class="p">{</span>
+    <span class="n">tx</span><span class="o">.</span><span class="n">finish</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="o">//</span> <span class="n">let</span><span class="s1">&#39;s execute a query now</span>
+<span class="n">ExecutionEngine</span> <span class="n">engine</span> <span class="o">=</span> <span class="n">new</span> <span class="n">ExecutionEngine</span><span class="p">(</span> <span class="n">db</span> <span class="p">);</span>
+<span class="n">ExecutionResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span> <span class="s2">&quot;start n=node(0) return n, n.name&quot;</span> <span class="p">);</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="n">result</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">+---------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">n</span>                              <span class="o">|</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span>           <span class="o">|</span>
+<span class="o">+---------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">Node</span><span class="p">[</span><span class="mi">0</span><span class="p">]{</span><span class="n">name</span><span class="p">:</span><span class="s2">&quot;reference node&quot;</span><span class="p">}</span> <span class="o">|</span> <span class="s2">&quot;reference node&quot;</span> <span class="o">|</span>
+<span class="o">+---------------------------------------------------+</span>
+<span class="mi">1</span> <span class="n">row</span>
+<span class="mi">0</span> <span class="n">ms</span>
+</pre></div>
+</td></tr></table></div>
+<p>注意：在这使用的类来自于 <code class="docutils literal"><span class="pre">org.neo4j.cypher.javacompat</span></code> 包，而不是 <code class="docutils literal"><span class="pre">org.neo4j.cypher</span></code> ，通过下面的链接查看Java API。</p>
+<p>你可以在结果中获取列的一个列表：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columns</span><span class="p">();</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="n">columns</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
+<p>在单列中获取结果数据集，像下面这样：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Iterator</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">n_column</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">columnAs</span><span class="p">(</span> <span class="s2">&quot;n&quot;</span> <span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span> <span class="n">Node</span> <span class="n">node</span> <span class="p">:</span> <span class="n">IteratorUtil</span><span class="o">.</span><span class="n">asIterable</span><span class="p">(</span> <span class="n">n_column</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">note</span><span class="p">:</span> <span class="n">we</span><span class="s1">&#39;re grabbing the name property from the node,</span>
+    <span class="o">//</span> <span class="ow">not</span> <span class="kn">from</span> <span class="nn">the</span> <span class="nn">n.name</span> <span class="nn">in</span> <span class="nn">this</span> <span class="nn">case.</span>
+    <span class="n">nodeResult</span> <span class="o">=</span> <span class="n">node</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">getProperty</span><span class="p">(</span> <span class="s2">&quot;name&quot;</span> <span class="p">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="n">nodeResult</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>在这种情况下结果中只有一个几个记录：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">Node</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">reference</span> <span class="n">node</span>
+</pre></div>
+</td></tr></table></div>
+<p>要获取所有的列，用下面的代替：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="p">(</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">row</span> <span class="p">:</span> <span class="n">result</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="n">Entry</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">column</span> <span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">entrySet</span><span class="p">()</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">rows</span> <span class="o">+=</span> <span class="n">column</span><span class="o">.</span><span class="n">getKey</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="n">column</span><span class="o">.</span><span class="n">getValue</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;; &quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">rows</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span> <span class="n">rows</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>输出结果：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">reference</span> <span class="n">node</span><span class="p">;</span> <span class="n">n</span><span class="p">:</span> <span class="n">Node</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</pre></div>
+</td></tr></table></div>
+<p>要获取Java接口中关于Cypher的更多信息，请参考：<a class="reference external" href="http://components.neo4j.org/neo4j-cypher/1.8/apidocs/index.html">Java API</a>。</p>
+<p>要获取更多关于Cypher的范例的信息，请参考： cypher-query-lang 和 data-modeling-examples。</p>
+</div></blockquote>
 </div>
 
 
