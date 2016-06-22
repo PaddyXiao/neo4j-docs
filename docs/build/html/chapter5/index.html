@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>第 5 章 &mdash; neo4j 0.1.0a documentation</title>
+    <title>第 5 章 Neo4j远程客户端库 &mdash; neo4j 0.1.0a documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
-    <link rel="next" title="第 6 章" href="../chapter6/index.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../chapter4/chapter4_10.html" /> 
+    <link rel="next" title="5.1. 由社区贡献的Neo4j REST客户端" href="chapter5_1.html" />
+    <link rel="prev" title="4.10. 在Java中执行Cypher查询" href="../chapter4/chapter4_10.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -36,10 +36,10 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../chapter6/index.html" title="第 6 章"
+          <a href="chapter5_1.html" title="5.1. 由社区贡献的Neo4j REST客户端"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="../chapter4/chapter4_10.html" title="&lt;no title&gt;"
+          <a href="../chapter4/chapter4_10.html" title="4.10. 在Java中执行Cypher查询"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li> 
       </ul>
@@ -50,8 +50,30 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="id1">
-<h1>第 5 章<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="neo4j">
+<span id="chapter5-index"></span><h1>第 5 章 Neo4j远程客户端库<a class="headerlink" href="#neo4j" title="Permalink to this headline">¶</a></h1>
+<blockquote>
+<div><p>包括Java范例在内的这些内容向我们展示了一个在Java中使用Neo4j REST API的更“低级”的方法。</p>
+<p>要获取更多信息，请浏览下面的介绍。</p>
+</div></blockquote>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="chapter5_1.html">5.1. 由社区贡献的Neo4j REST客户端</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5_2.html">5.2. 在Java中如何使用REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#rest-api">5.2.1. 通过 REST API 创建一个图数据库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id1">5.2.2. 启动图数据库服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id2">5.2.3. 创建一个节点</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id3">5.2.4. 增加属性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id4">5.2.5. 增加关系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id5">5.2.6. 给关系增加属性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id6">5.2.7. 从图数据库中查询数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id7">5.2.8. 喔，是这样吗？==</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id8">5.2.9. 下一步计划是什么呢？</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chapter5_2.html#id9">5.2.10. 附录：代码</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -62,10 +84,10 @@
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="../chapter4/chapter4_10.html"
-                        title="previous chapter">&lt;no title&gt;</a></p>
+                        title="previous chapter">4.10. 在Java中执行Cypher查询</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="../chapter6/index.html"
-                        title="next chapter">第 6 章</a></p>
+  <p class="topless"><a href="chapter5_1.html"
+                        title="next chapter">5.1. 由社区贡献的Neo4j REST客户端</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -94,10 +116,10 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../chapter6/index.html" title="第 6 章"
+          <a href="chapter5_1.html" title="5.1. 由社区贡献的Neo4j REST客户端"
              >next</a> |</li>
         <li class="right" >
-          <a href="../chapter4/chapter4_10.html" title="&lt;no title&gt;"
+          <a href="../chapter4/chapter4_10.html" title="4.10. 在Java中执行Cypher查询"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li> 
       </ul>

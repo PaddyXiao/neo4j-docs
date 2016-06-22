@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="Java">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.2. 在Java中如何使用REST API &mdash; neo4j 0.1.0a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.0a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="neo4j 0.1.0a documentation" href="../index.html" />
+    <link rel="up" title="第 5 章 Neo4j远程客户端库" href="index.html" />
+    <link rel="next" title="第 6 章" href="../chapter6/index.html" />
+    <link rel="prev" title="5.1. 由社区贡献的Neo4j REST客户端" href="chapter5_1.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../chapter6/index.html" title="第 6 章"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="chapter5_1.html" title="5.1. 由社区贡献的Neo4j REST客户端"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">第 5 章 Neo4j远程客户端库</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="javarest-api">
+<span id="chapter5-2-index"></span><h1>5.2. 在Java中如何使用REST API<a class="headerlink" href="#javarest-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rest-api">
+<h2>5.2.1. 通过 REST API 创建一个图数据库<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>REST API使用 <cite>HTTP</cite> 协议和 <cite>JSON</cite> 数据格式，以至于它能用于多种语言和平台。当准备开始使用的时候，看一些可以被重用的模式也是非常有帮助的。在这个简短的概述中，我们将为你展示如何使用 REST API 创建和维护一个简单的图数据库并且如何从中查询数据。</p>
+<p>对于这些范例，我们选择了 <a class="reference external" href="http://jersey.java.net/">Jersey</a> 客户端组件，这个组件之前我们已经通过 <cite>Maven</cite> 下载了。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id1">
+<h2>5.2.2. 启动图数据库服务器<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>在我们对服务器做任何操作之前，我们需要启动它。了解服务器安装的详细信息，请参考：<strong>server-installation</strong> 。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span>WebResource resource = Client.create()
+    .resource( SERVER_ROOT_URI );
+ClientResponse response = resource.get( ClientResponse.class );
+
+System.out.println( String.format( &quot;GET on [%s], status code [%d]&quot;,
+        SERVER_ROOT_URI, response.getStatus() ) );
+response.close();
+</pre></div>
+</td></tr></table></div>
+<p>如果返回状态码是 <code class="docutils literal"><span class="pre">200</span> <span class="pre">OK</span></code> ，那我们知道服务器已经运行良好而我们也能继续了。如果连接到服务器失败，请参考：server。</p>
+<p>注意：如果你得到任何大于 <code class="docutils literal"><span class="pre">200</span> <span class="pre">OK``（特别是</span> <span class="pre">``4xx</span></code> 和 <code class="docutils literal"><span class="pre">5xx</span></code> ）的返回码，那么请检查你的配置并且查看在目录 <cite>&#8216;data/log&#8217;</cite> 的日志文件。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h2>5.2.3. 创建一个节点<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>REST API使用+POST+方式创建节点。在Java中使用Jersey客户端封装是很简单的：</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>final String nodeEntryPointUri = SERVER_ROOT_URI + &quot;node&quot;;
+// http://localhost:7474/db/data/node
+
+WebResource resource = Client.create()
+        .resource( nodeEntryPointUri );
+// POST {} to the node entry point URI
+ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
+        .type( MediaType.APPLICATION_JSON )
+        .entity( &quot;{}&quot; )
+        .post( ClientResponse.class );
+
+final URI location = response.getLocation();
+System.out.println( String.format(
+        &quot;POST to [%s], status code [%d], location header [%s]&quot;,
+        nodeEntryPointUri, response.getStatus(), location.toString() ) );
+response.close();
+
+return location;
+</pre></div>
+</td></tr></table></div>
+<p>如果请求成功完成，它会在后台发送一个包括 <cite>JSON</cite> 格式的数据的 <cite>HTTP</cite> 请求到图数据库服务器。这服务器将会在数据库中创建一个新的节点并且返回一个状态码 <code class="docutils literal"><span class="pre">201</span> <span class="pre">Created</span></code> 和一个包含新节点地址的 <code class="docutils literal"><span class="pre">Location</span></code> 头信息。</p>
+<p>在我们的范例中，我们将调用两次这个功能以便在我们的数据库中创建两个节点。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h2>5.2.4. 增加属性<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>一旦我们在我们的数据库中有了节点，我们能用他们存储有用的数据。在这种情况下，我们将在我们的数据库中存储关于音乐的信息。让我们先看看我们创建节点和增加属性的代码。这儿我们已经增加了一个节点用来表示 <cite>Joe Strummer</cite> 和一个乐队 <cite>The Clash</cite> 。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">URI</span> <span class="n">firstNode</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">();</span>
+<span class="n">addProperty</span><span class="p">(</span> <span class="n">firstNode</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Joe Strummer&quot;</span> <span class="p">);</span>
+<span class="n">URI</span> <span class="n">secondNode</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">();</span>
+<span class="n">addProperty</span><span class="p">(</span> <span class="n">secondNode</span><span class="p">,</span> <span class="s2">&quot;band&quot;</span><span class="p">,</span> <span class="s2">&quot;The Clash&quot;</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>在 +addProperty+方法内部我们确定了表示节点属性的资源以及这个属性的名称。我们然后 +PUT+那个属性的值到服务器。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span>String propertyUri = nodeUri.toString() + &quot;/properties/&quot; + propertyName;
+// http://localhost:7474/db/data/node/{node_id}/properties/{property_name}
+
+WebResource resource = Client.create()
+        .resource( propertyUri );
+ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
+        .type( MediaType.APPLICATION_JSON )
+        .entity( &quot;\&quot;&quot; + propertyValue + &quot;\&quot;&quot; )
+        .put( ClientResponse.class );
+
+System.out.println( String.format( &quot;PUT to [%s], status code [%d]&quot;,
+        propertyUri, response.getStatus() ) );
+response.close();
+</pre></div>
+</td></tr></table></div>
+<p>如果一切运行正常，我们将得到一个 <code class="docutils literal"><span class="pre">204</span> <span class="pre">No</span> <span class="pre">Content</span></code> 的返回码表示服务器已经处理了我们的情况但并不会回显属性的值。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id4">
+<h2>5.2.5. 增加关系<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>现在我们有了表示 <cite>Joe Strummer</cite> 和 <cite>The Clash</cite> 的节点，我们将给他们建立关系。 REST API支持通过一个 <strong>POST</strong> 请求来为节点间建立关系。在Java中与此相对应，我们 <strong>POST</strong> 一些JSON数据到表示 <cite>Joe Strummer</cite> 的节点的地址上面，来确定一个该节点和表示 <cite>The Clash</cite> 的节点之前的关系。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">URI</span> <span class="n">relationshipUri</span> <span class="o">=</span> <span class="n">addRelationship</span><span class="p">(</span> <span class="n">firstNode</span><span class="p">,</span> <span class="n">secondNode</span><span class="p">,</span> <span class="s2">&quot;singer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;{ </span><span class="se">\&quot;</span><span class="s2">from</span><span class="se">\&quot;</span><span class="s2"> : </span><span class="se">\&quot;</span><span class="s2">1976</span><span class="se">\&quot;</span><span class="s2">, </span><span class="se">\&quot;</span><span class="s2">until</span><span class="se">\&quot;</span><span class="s2"> : </span><span class="se">\&quot;</span><span class="s2">1986</span><span class="se">\&quot;</span><span class="s2"> }&quot;</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>在 <code class="docutils literal"><span class="pre">addRelationship()</span></code> 方法内部，我们确定了节点 <cite>Joe Strummer</cite> 的关系的URI，然后 <strong>POST</strong> 了一个 <cite>JSON</cite> 数据到服务器。这个 <cite>JSON</cite> 数据包括目标节点，关系类型以及其他任何属性。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></div></td><td class="code"><div class="highlight"><pre><span></span>private static URI addRelationship( URI startNode, URI endNode,
+        String relationshipType, String jsonAttributes )
+        throws URISyntaxException {
+    URI fromUri = new URI( startNode.toString() + &quot;/relationships&quot; );
+    String relationshipJson = generateJsonRelationship( endNode,
+            relationshipType, jsonAttributes );
+
+    WebResource resource = Client.create()
+            .resource( fromUri );
+    // POST JSON to the relationships URI
+    ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
+            .type( MediaType.APPLICATION_JSON )
+            .entity( relationshipJson )
+            .post( ClientResponse.class );
+
+    final URI location = response.getLocation();
+    System.out.println( String.format(
+            &quot;POST to [%s], status code [%d], location header [%s]&quot;,
+            fromUri, response.getStatus(), location.toString() ) );
+
+    response.close();
+    return location;
+}
+</pre></div>
+</td></tr></table></div>
+<p>如果一切运行正常，我们将收到一个状态码 <code class="docutils literal"><span class="pre">201</span> <span class="pre">Created</span></code> 并且一个我们刚创建的关系的URI在 <cite>HTTP</cite> 头里面的 <code class="docutils literal"><span class="pre">Location</span></code> 。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id5">
+<h2>5.2.6. 给关系增加属性<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>像节点一样，关系也可以有属性。因为我们是 <cite>Joe Strummer</cite> 和 <cite>the Clash</cite> 的超级大粉丝，我们将增加一个评价属性到关系上面以至于其他人能看到这个乐队的5星级歌手。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">addMetadataToProperty</span><span class="p">(</span> <span class="n">relationshipUri</span><span class="p">,</span> <span class="s2">&quot;stars&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>在 <code class="docutils literal"><span class="pre">addMetadataToProperty()</span></code> 方法内部，我们确定关系的属性的URI，并且 <strong>PUT</strong> 我们的新值到服务器（因为它是 <strong>PUT</strong> 所以它总是会覆盖已经存在的值，所以一定要小心）。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span>private static void addMetadataToProperty( URI relationshipUri,
+        String name, String value ) throws URISyntaxException
+{
+    URI propertyUri = new URI( relationshipUri.toString() + &quot;/properties&quot; );
+    String entity = toJsonNameValuePairCollection( name, value );
+    WebResource resource = Client.create()
+            .resource( propertyUri );
+    ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
+            .type( MediaType.APPLICATION_JSON )
+            .entity( entity )
+            .put( ClientResponse.class );
+
+    System.out.println( String.format(
+            &quot;PUT [%s] to [%s], status code [%d]&quot;, entity, propertyUri,
+            response.getStatus() ) );
+    response.close();
+}
+</pre></div>
+</td></tr></table></div>
+<p>假设一切运行正常，我们将得到一个 <code class="docutils literal"><span class="pre">200</span> <span class="pre">OK</span></code> 返回码（我们也可以调用 <code class="docutils literal"><span class="pre">ClientResponse.getStatus()</span></code> 来获取）而且我们现在可以确定我们已经可以从一个小型图数据库中查询数据了。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id6">
+<h2>5.2.7. 从图数据库中查询数据<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>作为图数据库的嵌入模式，Neo4j服务器使用图遍历来在途中查询数据。当前Neo4j服务器期望一个 <cite>JSON</cite> 数据通过 <strong>POST</strong> 发送过来进行遍历查询（虽然这也可以改变成 <strong>GET</strong> 的方式）。</p>
+<p>要启动这个进程，我们用一个简单的类来封装 <cite>JSON</cite> 数据并通过 <strong>POST</strong> 发送到服务器，在这种情况下我们硬编码遍历查询来查找所有带有输出方向关系 <cite>&#8220;singer&#8221;</cite> 的所有节点。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">TraversalDescription</span> <span class="n">turns</span> <span class="n">into</span> <span class="n">JSON</span> <span class="n">to</span> <span class="n">send</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Server</span>
+<span class="n">TraversalDescription</span> <span class="n">t</span> <span class="o">=</span> <span class="n">new</span> <span class="n">TraversalDescription</span><span class="p">();</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setOrder</span><span class="p">(</span> <span class="n">TraversalDescription</span><span class="o">.</span><span class="n">DEPTH_FIRST</span> <span class="p">);</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setUniqueness</span><span class="p">(</span> <span class="n">TraversalDescription</span><span class="o">.</span><span class="n">NODE</span> <span class="p">);</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setMaxDepth</span><span class="p">(</span> <span class="mi">10</span> <span class="p">);</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setReturnFilter</span><span class="p">(</span> <span class="n">TraversalDescription</span><span class="o">.</span><span class="n">ALL</span> <span class="p">);</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setRelationships</span><span class="p">(</span> <span class="n">new</span> <span class="n">Relationship</span><span class="p">(</span> <span class="s2">&quot;singer&quot;</span><span class="p">,</span> <span class="n">Relationship</span><span class="o">.</span><span class="n">OUT</span> <span class="p">)</span> <span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>一旦我们定义了我们的遍历查询所需的参数，我们只需要传递它。我们先确定起始节点的遍历查询的URI，然后 +POST+遍历查询的JSON数据来完成这个需求。</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span>URI traverserUri = new URI( startNode.toString() + &quot;/traverse/node&quot; );
+WebResource resource = Client.create()
+        .resource( traverserUri );
+String jsonTraverserPayload = t.toJson();
+ClientResponse response = resource.accept( MediaType.APPLICATION_JSON )
+        .type( MediaType.APPLICATION_JSON )
+        .entity( jsonTraverserPayload )
+        .post( ClientResponse.class );
+
+System.out.println( String.format(
+        &quot;POST [%s] to [%s], status code [%d], returned data: &quot;
+                + System.getProperty( &quot;line.separator&quot; ) + &quot;%s&quot;,
+        jsonTraverserPayload, traverserUri, response.getStatus(),
+        response.getEntity( String.class ) ) );
+response.close();
+</pre></div>
+</td></tr></table></div>
+<p>一旦请求被完成，我们将得到歌手的数据集以及他们所属的乐队：</p>
+<div class="highlight-json"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="p">{</span>
+    <span class="nt">&quot;outgoing_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/out&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;band&quot;</span> <span class="p">:</span> <span class="s2">&quot;The Clash&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;Joe Strummer&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;traverse&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/traverse/{returnType}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;all_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/all/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;property&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/properties/{key}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;all_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/all&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;self&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/properties&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;outgoing_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/out/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;incoming_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/in&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;incoming_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships/in/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;create_relationship&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/82/relationships&quot;</span>
+  <span class="p">},</span> <span class="p">{</span>
+    <span class="nt">&quot;outgoing_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/out&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;traverse&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/traverse/{returnType}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;all_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/all/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;property&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/properties/{key}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;all_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/all&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;self&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;properties&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/properties&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;outgoing_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/out/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;incoming_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/in&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;incoming_typed_relationships&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships/in/{-list|&amp;|types}&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;create_relationship&quot;</span> <span class="p">:</span> <span class="s2">&quot;http://localhost:7474/db/data/node/83/relationships&quot;</span>
+  <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</div>
+<div class="section" id="id7">
+<h2>5.2.8. 喔，是这样吗？==<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>那是我们用 <strong>REST API</strong> 做我们的事情的方式。</p>
+<p>自然而然的我们提交到服务器的任何 <cite>HTTP</cite> 语义都很容易被封装，包括通过 <code class="docutils literal"><span class="pre">DELETE</span></code> 来移除节点和关系。不过，如果你已经完全掌握了，那么在 <cite>Jersey</cite> 客户端从 <code class="docutils literal"><span class="pre">.delete()</span></code> 切换成 <code class="docutils literal"><span class="pre">.delete()</span></code> 是非常容易的。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id8">
+<h2>5.2.9. 下一步计划是什么呢？<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p><strong>HTTP API</strong> 提供一个客户端库更好的基本实现，它也是优秀的基于 <cite>HTTP</cite> 的 <strong>REST</strong> 接口。</p>
+<p>比起提供友好的语言级的开发架构实现，尽管他们能非常简单的绑定来使用嵌入模式的图数据库，我们还是计划在将来让常用语言都提供基于 <strong>REST API</strong> 的客户端绑定实现。要了解当前各种语言的 <cite>Neo4j REST</cite> 客户端实现以及嵌入封装，请参考： <a class="reference external" href="http://www.delicious.com/neo4j/drivers">http://www.delicious.com/neo4j/drivers</a> 。</p>
+</div></blockquote>
+</div>
+<div class="section" id="id9">
+<h2>5.2.10. 附录：代码<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://github.com/neo4j/community/blob/1.8/server-examples/src/main/java/org/neo4j/examples/server/CreateSimpleGraph.java">CreateSimpleGraph.java</a></li>
+<li><a class="reference external" href="https://github.com/neo4j/community/blob/1.8/server-examples/src/main/java/org/neo4j/examples/server/Relationship.java">Relationship.java</a></li>
+<li><a class="reference external" href="https://github.com/neo4j/community/blob/1.8/server-examples/src/main/java/org/neo4j/examples/server/TraversalDescription.java">TraversalDescription.java</a></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5.2. 在Java中如何使用REST API</a><ul>
+<li><a class="reference internal" href="#rest-api">5.2.1. 通过 REST API 创建一个图数据库</a></li>
+<li><a class="reference internal" href="#id1">5.2.2. 启动图数据库服务器</a></li>
+<li><a class="reference internal" href="#id2">5.2.3. 创建一个节点</a></li>
+<li><a class="reference internal" href="#id3">5.2.4. 增加属性</a></li>
+<li><a class="reference internal" href="#id4">5.2.5. 增加关系</a></li>
+<li><a class="reference internal" href="#id5">5.2.6. 给关系增加属性</a></li>
+<li><a class="reference internal" href="#id6">5.2.7. 从图数据库中查询数据</a></li>
+<li><a class="reference internal" href="#id7">5.2.8. 喔，是这样吗？==</a></li>
+<li><a class="reference internal" href="#id8">5.2.9. 下一步计划是什么呢？</a></li>
+<li><a class="reference internal" href="#id9">5.2.10. 附录：代码</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="chapter5_1.html"
+                        title="previous chapter">5.1. 由社区贡献的Neo4j REST客户端</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../chapter6/index.html"
+                        title="next chapter">第 6 章</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/chapter5/chapter5_2.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../chapter6/index.html" title="第 6 章"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="chapter5_1.html" title="5.1. 由社区贡献的Neo4j REST客户端"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">neo4j 0.1.0a documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >第 5 章 Neo4j远程客户端库</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, 肖鹏(xiaopeng2@genomics.cn).
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>
