@@ -12,11 +12,11 @@
     
     图 2.1. RDBMS
     
-    .. figure:: ../_static/image2.1.png
+    .. figure:: ../_static/figs/image2.1.png
     
     图 2.2. 用图实现RDBMS模型
     
-    .. figure:: ../_static/image2.2.png
+    .. figure:: ../_static/figs/image2.2.png
     
 
 2.2.2. 从图数据库转换成Key-Value数据库
@@ -26,13 +26,13 @@
     
     图 2.3. Key-Value 存储模型
     
-    .. figure:: ../_static/image2.3.png
+    .. figure:: ../_static/figs/image2.3.png
     
     K* 代表一个键，V* 代表一个值。请注意，某些键指向其他键以及普通值。
     
     图 2.4. 用图实现 Key-Value 模型
     
-    .. figure:: ../_static/image2.4.png
+    .. figure:: ../_static/figs/image2.4.png
     
 2.2.3. 从图数据库转换成列数据库
 ------------------------------------------------------------------------
@@ -46,11 +46,11 @@
     
     图 2.5. 文档型数据库
     
-    .. figure:: ../_static/image2.5.png
+    .. figure:: ../_static/figs/image2.5.png
     
     D=文档, S=子文档, V=值, D2/S2 = 关联到（其他）文档的索引。
     
     图 2.6. 从图数据库转换成文档型数据库
     
-    .. figure:: ../_static/image2.6.png 
+    .. figure:: ../_static/figs/image2.6.png 
 
